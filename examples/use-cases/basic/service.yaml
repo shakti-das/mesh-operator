@@ -5,7 +5,10 @@ metadata:
   namespace: demo
   labels:
     app: orders
+    mesh.io/managed-by: mesh-operator
+  annotations:
     routing.mesh.io/enabled: "true"
+    routing.mesh.io/template: default/default
 spec:
   ports:
     - name: http
