@@ -21,12 +21,12 @@ const TemplateNameSeparator = constants.TemplateNameSeparator
 
 func TestGetTemplatesByPrefix(t *testing.T) {
 	templates := map[string]string{
-		"default_default_virtualservice":     "default-vs-content",
-		"default_default_destinationrule":    "default-dr-content",
-		"other-ns_other-svc_virtualservice":  "other-vs-content",
-		"other-ns_other-svc_destinationrule": "other-dr-content",
-		"example-coreapp_coreapp_vs":             "coreapp-content",
-		"example-coreapp_coreapp-bootstrap_vs":   "coreapp-bootstrap-content",
+		"default_default_virtualservice":       "default-vs-content",
+		"default_default_destinationrule":      "default-dr-content",
+		"other-ns_other-svc_virtualservice":    "other-vs-content",
+		"other-ns_other-svc_destinationrule":   "other-dr-content",
+		"example-coreapp_coreapp_vs":           "coreapp-content",
+		"example-coreapp_coreapp-bootstrap_vs": "coreapp-bootstrap-content",
 	}
 	testCases := []struct {
 		name            string
@@ -187,8 +187,8 @@ func TestLoadTemplatesFromDirs(t *testing.T) {
 	assert.Equal(
 		t,
 		map[string]string{
-			"default_redis_destinationrule":                          "file-content",
-			"default_redis_virtualservice":                           "file-content",
+			"default_redis_destinationrule":                                  "file-content",
+			"default_redis_virtualservice":                                   "file-content",
 			"unified-engagement_rate-limiting-service_rate-limiting-service": "file-content",
 		},
 		templates)
@@ -249,8 +249,8 @@ func TestLoadTemplatesFromFilesAndDirs(t *testing.T) {
 		map[string]string{
 			"default_default_destinationrule":                                "file-content",
 			"default_default_virtualservice":                                 "file-content",
-			"default_redis_destinationrule":                          "file-content",
-			"default_redis_virtualservice":                           "file-content",
+			"default_redis_destinationrule":                                  "file-content",
+			"default_redis_virtualservice":                                   "file-content",
 			"unified-engagement_rate-limiting-service_rate-limiting-service": "file-content",
 		},
 		templates)

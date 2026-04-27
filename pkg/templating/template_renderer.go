@@ -19,8 +19,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 	"github.com/google/go-jsonnet"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 	"go.uber.org/zap"
 )
 

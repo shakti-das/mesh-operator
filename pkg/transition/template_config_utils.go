@@ -17,15 +17,15 @@ const (
 	DefaultDefault = "default_default"
 
 	DefaultStatefulSet = "default_stateful"
-	EmailinfraEaas         = "emailinfra_eaas"
-	SolrService            = "solr-service_solr-service"
-	Vagabond               = "vagabond_vagabond"
+	EmailinfraEaas     = "emailinfra_eaas"
+	SolrService        = "solr-service_solr-service"
+	Vagabond           = "vagabond_vagabond"
 
-	DefaultRedisSet    = "default_redis"
+	DefaultRedisSet        = "default_redis"
 	Caas                   = "cache-as-a-service_caas"
 	CaasPc                 = "cache-as-a-service_caaspc"
 	DefaultExternalService = "default_external-service"
-	DefaultZkSet       = "default_zookeeper"
+	DefaultZkSet           = "default_zookeeper"
 
 	CoreOnSamCoreapp = "example-coreapp_coreapp"
 	CoreOnSamDapp    = "example-coreapp_dapp"

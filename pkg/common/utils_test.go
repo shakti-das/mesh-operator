@@ -112,15 +112,15 @@ func TestGetAttributeOrAlias(t *testing.T) {
 	metaObj := metav1.ObjectMeta{
 		Name: "test-meta-object",
 		Annotations: map[string]string{
-			"routing.mesh.io.example.com/enabled":           "true",
-			"routing.mesh.io.example.com/template":          "test-template",
-			"routing.mesh.io.example.com/testing":           "test-svc",
+			"routing.mesh.io.example.com/enabled":     "true",
+			"routing.mesh.io.example.com/template":    "test-template",
+			"routing.mesh.io.example.com/testing":     "test-svc",
 			"routing.mesh.io/dynamic-routing-service": "dynamic-svc",
 		},
 		Labels: map[string]string{
-			"routing.mesh.io.example.com/enabled":           "true",
-			"routing.mesh.io.example.com/template":          "test-template",
-			"routing.mesh.io.example.com/testing":           "test-svc",
+			"routing.mesh.io.example.com/enabled":     "true",
+			"routing.mesh.io.example.com/template":    "test-template",
+			"routing.mesh.io.example.com/testing":     "test-svc",
 			"routing.mesh.io/dynamic-routing-service": "dynamic-svc",
 		},
 	}
@@ -251,7 +251,7 @@ func TestAnnotationHasPrefixOrAlias(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			for key, _ := range tc.obj.Annotations {
+			for key := range tc.obj.Annotations {
 				alias.Manager = alias.NewAliasManager(nil, tc.aliasMap)
 
 				hasPrefix, suffix := FindAnnotationSuffixByPrefixOrAlias(tc.attribute, key)

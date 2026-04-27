@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	mopv1 "github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 	"github.com/istio-ecosystem/mesh-operator/pkg/common"
 	"github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
@@ -14,7 +15,6 @@ import (
 	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 	"github.com/istio-ecosystem/mesh-operator/pkg/resources"
 	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
-	"github.com/google/uuid"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"
 	v1 "k8s.io/api/core/v1"

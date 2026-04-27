@@ -355,7 +355,7 @@ func TestRenderMeshOperator(t *testing.T) {
 			renderContext: context,
 			renderer:      &emptyResultRenderer,
 			expectedRenderResult: map[string][]*unstructured.Unstructured{
-				"0": []*unstructured.Unstructured{},
+				"0": {},
 			},
 		},
 		{
@@ -363,7 +363,7 @@ func TestRenderMeshOperator(t *testing.T) {
 			renderContext: configNsContext,
 			renderer:      &emptyResultRenderer,
 			expectedRenderResult: map[string][]*unstructured.Unstructured{
-				"0": []*unstructured.Unstructured{},
+				"0": {},
 			},
 		},
 	}
