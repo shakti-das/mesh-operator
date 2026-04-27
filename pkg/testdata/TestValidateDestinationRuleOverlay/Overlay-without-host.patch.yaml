@@ -1,0 +1,5 @@
+spec:
+  trafficPolicy:
+    outlierDetection:
+      baseEjectionTime: 1h
+      consecutive5xxErrors: 1

@@ -1,0 +1,10 @@
+{
+  "spec": {
+    "http": [
+      {
+        "name": "default",
+        "$patch": "delete"
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+extensions:
+  extension1:
+    additionalObjects:
+      - group: "networking.istio.io"
+        version: "v1alpha3"
+        resource: "virtualservices"
+        lookup:
+          matchByServiceLabels:
+            - "label1"

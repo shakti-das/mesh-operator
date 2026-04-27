@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: test-vs
+  namespace: default
+spec:
+  gateways:
+  - mesh
+  hosts:
+  - my.service.cluster.local
+  - my.service.mesh.io
+  http:
+  - match:
+    - port: 123
+    - port: 333
+    name: default
+    retries:
+      attempts: 5
+    route:
+    - destination:
+        host: my.service.prod.mesh.io
+    timeout: 15s

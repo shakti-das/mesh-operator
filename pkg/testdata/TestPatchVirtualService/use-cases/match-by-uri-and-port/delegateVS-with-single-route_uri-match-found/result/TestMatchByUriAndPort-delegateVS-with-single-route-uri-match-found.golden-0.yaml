@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: istio-shipping
+  namespace: test-namespace
+spec:
+  gateways:
+  - mesh
+  hosts:
+  - istio-shipping.test-namespace.svc.cluster.local
+  - istio-shipping.test-namespace.svc.mesh.sfdc.net
+  http:
+  - delegate:
+      name: istio-shipping1-7442
+      namespace: test-namespace
+    match:
+    - port: 7442
+    name: http-7442
+  - delegate:
+      name: istio-shipping1-7443
+      namespace: test-namespace
+    match:
+    - port: 7443
+    name: http-7443

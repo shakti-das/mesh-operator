@@ -1,0 +1,68 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: istio-shipping1-7442
+  namespace: test-namespace
+spec:
+  http:
+  - headers:
+      request:
+        set:
+          x-salesforce-tls-cipher: '%DOWNSTREAM_TLS_CIPHER%'
+          x-salesforce-tls-source: '%DOWNSTREAM_REMOTE_ADDRESS%'
+          x-salesforce-tls-version: '%DOWNSTREAM_TLS_VERSION%'
+          x-tls-cipher: '%DOWNSTREAM_TLS_CIPHER%'
+          x-tls-source: '%DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT%'
+          x-tls-version: '%DOWNSTREAM_TLS_VERSION%'
+      response:
+        remove:
+        - server
+        - x-aspnet-version
+        - x-powered-by
+        - x-envoy-upstream-service-time
+    match:
+    - uri:
+        prefix: /gpt/dev
+    name: http-delegate-7442-uri-injected
+    retries:
+      attempts: 5
+      retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+      retryRemoteLocalities: true
+    route:
+    - destination:
+        host: istio-shipping-stateful-0.istio-shipping-stateful.service-mesh.svc.cluster.local
+        port:
+          number: 15375
+      weight: 50
+    - destination:
+        host: istio-shipping-stateful-1.istio-shipping-stateful.service-mesh.svc.cluster.local
+        port:
+          number: 15375
+      weight: 50
+    timeout: 15s
+  - headers:
+      request:
+        set:
+          x-salesforce-tls-cipher: '%DOWNSTREAM_TLS_CIPHER%'
+          x-salesforce-tls-source: '%DOWNSTREAM_REMOTE_ADDRESS%'
+          x-salesforce-tls-version: '%DOWNSTREAM_TLS_VERSION%'
+          x-tls-cipher: '%DOWNSTREAM_TLS_CIPHER%'
+          x-tls-source: '%DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT%'
+          x-tls-version: '%DOWNSTREAM_TLS_VERSION%'
+      response:
+        remove:
+        - server
+        - x-aspnet-version
+        - x-powered-by
+        - x-envoy-upstream-service-time
+    name: http-delegate-7442
+    retries:
+      attempts: 5
+      retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+      retryRemoteLocalities: true
+    route:
+    - destination:
+        host: istio-shipping.test-namespace.svc.cluster.local
+        port:
+          number: 7442
+    timeout: 15s

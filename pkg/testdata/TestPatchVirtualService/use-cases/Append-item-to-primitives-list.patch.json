@@ -1,0 +1,7 @@
+{
+  "spec": {
+    "gateways": [
+        "additional-gateway"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+spec:
+  host: istio-shipping.service-mesh.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+      localityLbSetting:
+        enabled: true

@@ -1,0 +1,1688 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: (unknown)
+  name: meshoperators.mesh.io
+spec:
+  group: mesh.io
+  names:
+    kind: MeshOperator
+    listKind: MeshOperatorList
+    plural: meshoperators
+    shortNames:
+    - mop
+    singular: meshoperator
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.phase
+      name: Phase
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: MeshOperator is the Schema for the meshoperators API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: MeshOperatorSpec defines the desired state of MeshOperator
+            properties:
+              extensions:
+                items:
+                  properties:
+                    activeHealthCheck:
+                      description: ActiveHealthCheck - Enable active health-checking
+                      properties:
+                        activateExtensionLabels:
+                          additionalProperties:
+                            type: string
+                          type: object
+                        forIngress:
+                          default: false
+                          type: boolean
+                        portLevelHealthChecks:
+                          items:
+                            description: PortLevelHealthCheck - Configures active
+                              health-checking for the given port
+                            properties:
+                              healthCheck:
+                                description: HealthCheckerConfig - Active health check
+                                  configuration object
+                                properties:
+                                  failureThreshold:
+                                    default: 3
+                                    format: int32
+                                    minimum: 1
+                                    type: integer
+                                  httpHealthCheck:
+                                    description: HTTPHealthCheck - Health check configuration
+                                      for HTTP
+                                    properties:
+                                      path:
+                                        pattern: \/.+
+                                        type: string
+                                    required:
+                                    - path
+                                    type: object
+                                  intervalSec:
+                                    format: int32
+                                    minimum: 1
+                                    type: integer
+                                  noTrafficIntervalMins:
+                                    default: 1
+                                    format: int32
+                                    minimum: 1
+                                    type: integer
+                                  redisHealthCheck:
+                                    description: RedisHealthCheck - Health check configuration
+                                      for Redis using key-based EXISTS query
+                                    properties:
+                                      key:
+                                        minLength: 1
+                                        type: string
+                                    required:
+                                    - key
+                                    type: object
+                                  successThreshold:
+                                    default: 2
+                                    format: int32
+                                    minimum: 1
+                                    type: integer
+                                  timeoutMillis:
+                                    default: 1000
+                                    format: int32
+                                    minimum: 1
+                                    type: integer
+                                required:
+                                - intervalSec
+                                type: object
+                              port:
+                                format: int32
+                                minimum: 1
+                                type: integer
+                            required:
+                            - healthCheck
+                            - port
+                            type: object
+                          minItems: 1
+                          type: array
+                      required:
+                      - portLevelHealthChecks
+                      type: object
+                    authority:
+                      description: AuthorityFilter - Authority filter config
+                      properties:
+                        enabled:
+                          default: false
+                          type: boolean
+                      required:
+                      - enabled
+                      type: object
+                    clusterConfigClientSide:
+                      description: ClusterConfigClientSide - Client side cluster settings
+                        that are configurable
+                      properties:
+                        connectionPoolPerDownstreamConnection:
+                          description: connectionPoolPerDownstreamConnection - If
+                            set to true, Envoy will create a new connection pool for
+                            each downstream connection.
+                          type: boolean
+                        ports:
+                          items:
+                            format: int32
+                            type: integer
+                          minItems: 1
+                          type: array
+                      required:
+                      - connectionPoolPerDownstreamConnection
+                      - ports
+                      type: object
+                    clusterConfigServerSide:
+                      description: ClusterConfigServerSide - Server side cluster settings
+                        that are configurable
+                      properties:
+                        connectionPoolPerDownstreamConnection:
+                          description: connectionPoolPerDownstreamConnection - If
+                            set to true, Envoy will create a new connection pool for
+                            each downstream connection.
+                          type: boolean
+                        ports:
+                          items:
+                            format: int32
+                            type: integer
+                          minItems: 1
+                          type: array
+                      required:
+                      - connectionPoolPerDownstreamConnection
+                      - ports
+                      type: object
+                    faultInjection:
+                      properties:
+                        abort:
+                          properties:
+                            grpcStatus:
+                              format: int32
+                              type: integer
+                            httpStatus:
+                              format: int32
+                              maximum: 599
+                              minimum: 200
+                              type: integer
+                            percentage:
+                              default:
+                                denominator: HUNDRED
+                                numerator: 100
+                              properties:
+                                denominator:
+                                  default: HUNDRED
+                                  enum:
+                                  - HUNDRED
+                                  - TEN_THOUSAND
+                                  - MILLION
+                                  type: string
+                                numerator:
+                                  default: 100
+                                  type: integer
+                              type: object
+                          type: object
+                        clientFault:
+                          default: false
+                          type: boolean
+                        delay:
+                          properties:
+                            fixedDelay:
+                              type: string
+                            percentage:
+                              default:
+                                denominator: HUNDRED
+                                numerator: 100
+                              properties:
+                                denominator:
+                                  default: HUNDRED
+                                  enum:
+                                  - HUNDRED
+                                  - TEN_THOUSAND
+                                  - MILLION
+                                  type: string
+                                numerator:
+                                  default: 100
+                                  type: integer
+                              type: object
+                          required:
+                          - fixedDelay
+                          type: object
+                        ports:
+                          items:
+                            format: int32
+                            type: integer
+                          type: array
+                        redisAbort:
+                          properties:
+                            commands:
+                              items:
+                                type: string
+                              type: array
+                            percentage:
+                              default:
+                                denominator: HUNDRED
+                                numerator: 100
+                              properties:
+                                denominator:
+                                  default: HUNDRED
+                                  enum:
+                                  - HUNDRED
+                                  - TEN_THOUSAND
+                                  - MILLION
+                                  type: string
+                                numerator:
+                                  default: 100
+                                  type: integer
+                              type: object
+                          type: object
+                        redisDelay:
+                          properties:
+                            commands:
+                              items:
+                                type: string
+                              type: array
+                            fixedDelay:
+                              type: string
+                            percentage:
+                              default:
+                                denominator: HUNDRED
+                                numerator: 100
+                              properties:
+                                denominator:
+                                  default: HUNDRED
+                                  enum:
+                                  - HUNDRED
+                                  - TEN_THOUSAND
+                                  - MILLION
+                                  type: string
+                                numerator:
+                                  default: 100
+                                  type: integer
+                              type: object
+                          required:
+                          - fixedDelay
+                          type: object
+                      type: object
+                    gatewayProxy:
+                      description: GatewayProxyFilter - Enables sidecar to act as
+                        another gateway behind ingress gateway so that it can do intelligent
+                        routing in the cluster. This enables features such as retaining
+                        the original client in xfcc header, etc.
+                      properties:
+                        enabled:
+                          default: false
+                          type: boolean
+                      required:
+                      - enabled
+                      type: object
+                    globalRateLimit:
+                      description: GlobalRateLimitFilter - Custom configurations for
+                        rate limit filter per inbound port
+                      properties:
+                        enableXRatelimitHeaders:
+                          type: boolean
+                        rateLimitConfigs:
+                          items:
+                            description: GlobalRateLimitConfig - Configuration for
+                              global rate limiting with requestType support
+                            properties:
+                              actionRules:
+                                items:
+                                  description: ActionRule defines rules based on which
+                                    an application want to rate limit a given request
+                                  properties:
+                                    actions:
+                                      items:
+                                        properties:
+                                          genericKey:
+                                            properties:
+                                              descriptorKey:
+                                                type: string
+                                              descriptorValue:
+                                                type: string
+                                            required:
+                                            - descriptorValue
+                                            type: object
+                                          headerValueMatch:
+                                            properties:
+                                              descriptorKey:
+                                                type: string
+                                              descriptorValue:
+                                                type: string
+                                              expectMatch:
+                                                type: boolean
+                                              headers:
+                                                items:
+                                                  properties:
+                                                    containsMatch:
+                                                      type: string
+                                                    exactMatch:
+                                                      type: string
+                                                    invertMatch:
+                                                      type: boolean
+                                                    name:
+                                                      type: string
+                                                    prefixMatch:
+                                                      type: string
+                                                    presentMatch:
+                                                      type: boolean
+                                                    rangeMatch:
+                                                      properties:
+                                                        end:
+                                                          format: int64
+                                                          type: integer
+                                                        start:
+                                                          format: int64
+                                                          type: integer
+                                                      required:
+                                                      - end
+                                                      - start
+                                                      type: object
+                                                    safeRegexMatch:
+                                                      properties:
+                                                        regex:
+                                                          type: string
+                                                      required:
+                                                      - regex
+                                                      type: object
+                                                    stringMatch:
+                                                      properties:
+                                                        contains:
+                                                          type: string
+                                                        exact:
+                                                          type: string
+                                                        ignoreCase:
+                                                          type: boolean
+                                                        prefix:
+                                                          type: string
+                                                        safeRegex:
+                                                          properties:
+                                                            regex:
+                                                              type: string
+                                                          required:
+                                                          - regex
+                                                          type: object
+                                                        suffix:
+                                                          type: string
+                                                      type: object
+                                                    suffixMatch:
+                                                      type: string
+                                                    treatMissingHeaderAsEmpty:
+                                                      type: boolean
+                                                  required:
+                                                  - name
+                                                  type: object
+                                                type: array
+                                            required:
+                                            - descriptorValue
+                                            - headers
+                                            type: object
+                                          requestHeaders:
+                                            properties:
+                                              descriptorKey:
+                                                type: string
+                                              headerName:
+                                                type: string
+                                              skipIfAbsent:
+                                                type: boolean
+                                            required:
+                                            - descriptorKey
+                                            - headerName
+                                            type: object
+                                        type: object
+                                      type: array
+                                  required:
+                                  - actions
+                                  type: object
+                                minItems: 1
+                                type: array
+                              domain:
+                                type: string
+                              failureModeDeny:
+                                default: false
+                                type: boolean
+                              inboundPorts:
+                                items:
+                                  format: int32
+                                  type: integer
+                                minItems: 1
+                                type: array
+                              requestType:
+                                default: both
+                                enum:
+                                - internal
+                                - external
+                                - both
+                                type: string
+                            required:
+                            - actionRules
+                            - domain
+                            - inboundPorts
+                            type: object
+                          type: array
+                        rateLimitService:
+                          properties:
+                            authority:
+                              type: string
+                            namespace:
+                              type: string
+                            port:
+                              format: int32
+                              minimum: 1
+                              type: integer
+                            serviceName:
+                              type: string
+                            subset:
+                              type: string
+                            timeout:
+                              default: 5s
+                              type: string
+                          required:
+                          - authority
+                          - namespace
+                          - port
+                          - serviceName
+                          type: object
+                      required:
+                      - rateLimitConfigs
+                      type: object
+                    grpcJsonTranscoder:
+                      description: |-
+                        GRPCJsonTranscoderFilter is a filter which allows a RESTful JSON API client to send requests to Envoy
+                        over HTTP and get proxied to a gRPC service.
+                      properties:
+                        port:
+                          format: int32
+                          minimum: 1
+                          type: integer
+                        protoDescriptor:
+                          type: string
+                        services:
+                          items:
+                            type: string
+                          minItems: 1
+                          type: array
+                      required:
+                      - port
+                      - protoDescriptor
+                      - services
+                      type: object
+                    gzip:
+                      description: GzipFilter - enables a client to request compression
+                        of data dispatched by an upstream service
+                      properties:
+                        inboundConfig:
+                          properties:
+                            contentTypes:
+                              items:
+                                type: string
+                              minItems: 1
+                              type: array
+                            ports:
+                              items:
+                                format: int32
+                                type: integer
+                              minItems: 1
+                              type: array
+                          required:
+                          - ports
+                          type: object
+                        outboundConfig:
+                          properties:
+                            contentTypes:
+                              items:
+                                type: string
+                              minItems: 1
+                              type: array
+                            ports:
+                              items:
+                                format: int32
+                                type: integer
+                              minItems: 1
+                              type: array
+                          required:
+                          - ports
+                          type: object
+                      required:
+                      - inboundConfig
+                      - outboundConfig
+                      type: object
+                    healthCheck:
+                      description: HealthCheckFilter - Add a health check endpoint
+                        to a service
+                      properties:
+                        endpoint:
+                          items:
+                            properties:
+                              path:
+                                type: string
+                              port:
+                                format: int32
+                                type: integer
+                            required:
+                            - path
+                            - port
+                            type: object
+                          minItems: 1
+                          type: array
+                      required:
+                      - endpoint
+                      type: object
+                    ingressCookieAttributes:
+                      description: IngressCookieAttribute - Set cookie attributes
+                        on IG port(s)
+                      properties:
+                        cookies:
+                          items:
+                            properties:
+                              attributes:
+                                items:
+                                  properties:
+                                    name:
+                                      type: string
+                                    value:
+                                      type: string
+                                  required:
+                                  - name
+                                  type: object
+                                minItems: 1
+                                type: array
+                              cookieName:
+                                type: string
+                            required:
+                            - attributes
+                            type: object
+                          minItems: 1
+                          type: array
+                        ports:
+                          items:
+                            format: int32
+                            type: integer
+                          minItems: 1
+                          type: array
+                      required:
+                      - cookies
+                      - ports
+                      type: object
+                    ingressLua:
+                      description: IngressLua - Apply lua script for service at ingress
+                      properties:
+                        ports:
+                          items:
+                            enum:
+                            - 80
+                            - 443
+                            - 7443
+                            - 9443
+                            - 10443
+                            - 11443
+                            format: int32
+                            type: integer
+                          minItems: 1
+                          type: array
+                        type:
+                          type: string
+                      required:
+                      - ports
+                      - type
+                      type: object
+                    ingressRateLimit:
+                      description: IngressRateLimitFilter - Custom configurations
+                        for rate limit filter per inbound port at IG layer
+                      properties:
+                        enableXRatelimitHeaders:
+                          type: boolean
+                        hosts:
+                          items:
+                            type: string
+                          minItems: 1
+                          type: array
+                        rateLimitConfigs:
+                          items:
+                            description: IngressRateLimitConfig - Configuration for
+                              ingress rate limiting without requestType support
+                            properties:
+                              actionRules:
+                                items:
+                                  description: ActionRule defines rules based on which
+                                    an application want to rate limit a given request
+                                  properties:
+                                    actions:
+                                      items:
+                                        properties:
+                                          genericKey:
+                                            properties:
+                                              descriptorKey:
+                                                type: string
+                                              descriptorValue:
+                                                type: string
+                                            required:
+                                            - descriptorValue
+                                            type: object
+                                          headerValueMatch:
+                                            properties:
+                                              descriptorKey:
+                                                type: string
+                                              descriptorValue:
+                                                type: string
+                                              expectMatch:
+                                                type: boolean
+                                              headers:
+                                                items:
+                                                  properties:
+                                                    containsMatch:
+                                                      type: string
+                                                    exactMatch:
+                                                      type: string
+                                                    invertMatch:
+                                                      type: boolean
+                                                    name:
+                                                      type: string
+                                                    prefixMatch:
+                                                      type: string
+                                                    presentMatch:
+                                                      type: boolean
+                                                    rangeMatch:
+                                                      properties:
+                                                        end:
+                                                          format: int64
+                                                          type: integer
+                                                        start:
+                                                          format: int64
+                                                          type: integer
+                                                      required:
+                                                      - end
+                                                      - start
+                                                      type: object
+                                                    safeRegexMatch:
+                                                      properties:
+                                                        regex:
+                                                          type: string
+                                                      required:
+                                                      - regex
+                                                      type: object
+                                                    stringMatch:
+                                                      properties:
+                                                        contains:
+                                                          type: string
+                                                        exact:
+                                                          type: string
+                                                        ignoreCase:
+                                                          type: boolean
+                                                        prefix:
+                                                          type: string
+                                                        safeRegex:
+                                                          properties:
+                                                            regex:
+                                                              type: string
+                                                          required:
+                                                          - regex
+                                                          type: object
+                                                        suffix:
+                                                          type: string
+                                                      type: object
+                                                    suffixMatch:
+                                                      type: string
+                                                    treatMissingHeaderAsEmpty:
+                                                      type: boolean
+                                                  required:
+                                                  - name
+                                                  type: object
+                                                type: array
+                                            required:
+                                            - descriptorValue
+                                            - headers
+                                            type: object
+                                          requestHeaders:
+                                            properties:
+                                              descriptorKey:
+                                                type: string
+                                              headerName:
+                                                type: string
+                                              skipIfAbsent:
+                                                type: boolean
+                                            required:
+                                            - descriptorKey
+                                            - headerName
+                                            type: object
+                                        type: object
+                                      type: array
+                                  required:
+                                  - actions
+                                  type: object
+                                minItems: 1
+                                type: array
+                              domain:
+                                type: string
+                              failureModeDeny:
+                                default: false
+                                type: boolean
+                              inboundPorts:
+                                items:
+                                  format: int32
+                                  type: integer
+                                minItems: 1
+                                type: array
+                            required:
+                            - actionRules
+                            - domain
+                            - inboundPorts
+                            type: object
+                          type: array
+                        rateLimitService:
+                          properties:
+                            authority:
+                              type: string
+                            namespace:
+                              type: string
+                            port:
+                              format: int32
+                              minimum: 1
+                              type: integer
+                            serviceName:
+                              type: string
+                            subset:
+                              type: string
+                            timeout:
+                              default: 5s
+                              type: string
+                          required:
+                          - authority
+                          - namespace
+                          - port
+                          - serviceName
+                          type: object
+                        routeName:
+                          type: string
+                      required:
+                      - hosts
+                      - rateLimitConfigs
+                      - routeName
+                      type: object
+                    ingressRequestHeaders:
+                      description: IngressRequestHeaders - Ingress request header
+                        mutation
+                      properties:
+                        mutations:
+                          items:
+                            properties:
+                              appendIfAbsent:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                              appendOrAdd:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                              remove:
+                                type: string
+                              replaceIfExists:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                              replaceOrAdd:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                            type: object
+                          minItems: 1
+                          type: array
+                        ports:
+                          items:
+                            enum:
+                            - 80
+                            - 443
+                            - 7443
+                            - 9443
+                            - 10443
+                            - 11443
+                            format: int32
+                            type: integer
+                          minItems: 1
+                          type: array
+                      required:
+                      - mutations
+                      - ports
+                      type: object
+                    ingressResponseHeaders:
+                      description: IngressResponseHeaders - Ingress response header
+                        mutation
+                      properties:
+                        mutations:
+                          items:
+                            properties:
+                              appendIfAbsent:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                              appendOrAdd:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                              remove:
+                                type: string
+                              replaceIfExists:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                              replaceOrAdd:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                            type: object
+                          minItems: 1
+                          type: array
+                        ports:
+                          items:
+                            enum:
+                            - 80
+                            - 443
+                            - 7443
+                            - 9443
+                            - 10443
+                            - 11443
+                            format: int32
+                            type: integer
+                          minItems: 1
+                          type: array
+                      required:
+                      - mutations
+                      - ports
+                      type: object
+                    loadBalancerConfig:
+                      description: LoadBalancerConfig - Common configurations for
+                        load balancer
+                      properties:
+                        overrideHostStatus:
+                          properties:
+                            statuses:
+                              items:
+                                enum:
+                                - UNKNOWN
+                                - HEALTHY
+                                - UNHEALTHY
+                                - DRAINING
+                                - TIMEOUT
+                                - DEGRADED
+                                type: string
+                              type: array
+                          required:
+                          - statuses
+                          type: object
+                        port:
+                          format: int32
+                          type: integer
+                      type: object
+                    localRateLimit:
+                      description: LocalRateLimitFilter - Enable local (per sidecar)
+                        rate limiting
+                      properties:
+                        portRateLimits:
+                          items:
+                            description: PortRateLimit - Port-based rate limit configuration
+                            properties:
+                              filteredRateLimits:
+                                items:
+                                  description: FilteredRateLimit - Rate limit configuration
+                                    and match criteria
+                                  properties:
+                                    caller:
+                                      description: Service - Caller service to which
+                                        rate limit should be applied
+                                      properties:
+                                        namespace:
+                                          type: string
+                                        serviceIdentity:
+                                          type: string
+                                        spiffeElements:
+                                          items:
+                                            description: KeyValuePair - A key-value
+                                              pair
+                                            properties:
+                                              key:
+                                                type: string
+                                              value:
+                                                type: string
+                                            required:
+                                            - key
+                                            - value
+                                            type: object
+                                          type: array
+                                      required:
+                                      - namespace
+                                      - serviceIdentity
+                                      type: object
+                                    headers:
+                                      items:
+                                        description: RateLimitHeaderMatch - key-value
+                                          pairs for which rate limit should be applied
+                                        properties:
+                                          header:
+                                            description: |-
+                                              Require either header+value or header+regex
+                                              make sure to restore the CRD generated by controller-gen
+                                            type: string
+                                          regex:
+                                            type: string
+                                          value:
+                                            type: string
+                                        required:
+                                        - header
+                                        type: object
+                                      type: array
+                                    name:
+                                      type: string
+                                    rateLimit:
+                                      description: RateLimit - Parameters used in
+                                        limit calculation
+                                      properties:
+                                        maxRequests:
+                                          format: int32
+                                          minimum: 1
+                                          type: integer
+                                        unit:
+                                          enum:
+                                          - SECOND
+                                          - MINUTE
+                                          - HOUR
+                                          - DAY
+                                          type: string
+                                        unitFactor:
+                                          default: 1
+                                          format: int32
+                                          minimum: 1
+                                          type: integer
+                                      required:
+                                      - maxRequests
+                                      - unit
+                                      type: object
+                                  required:
+                                  - rateLimit
+                                  type: object
+                                minItems: 1
+                                type: array
+                              name:
+                                type: string
+                              port:
+                                format: int32
+                                minimum: 1
+                                type: integer
+                              rateLimit:
+                                description: RateLimit - Parameters used in limit
+                                  calculation
+                                properties:
+                                  maxRequests:
+                                    format: int32
+                                    minimum: 1
+                                    type: integer
+                                  unit:
+                                    enum:
+                                    - SECOND
+                                    - MINUTE
+                                    - HOUR
+                                    - DAY
+                                    type: string
+                                  unitFactor:
+                                    default: 1
+                                    format: int32
+                                    minimum: 1
+                                    type: integer
+                                required:
+                                - maxRequests
+                                - unit
+                                type: object
+                            required:
+                            - port
+                            type: object
+                          type: array
+                      type: object
+                    maxOutboundFrames:
+                      description: MaxOutboundFrames - HTTP2 max-outbound-frames configs
+                      properties:
+                        maxFrames:
+                          default: 10000
+                          format: int32
+                          minimum: 10000
+                          type: integer
+                        port:
+                          format: int32
+                          type: integer
+                      required:
+                      - maxFrames
+                      - port
+                      type: object
+                    meshRequestHeaders:
+                      description: MeshRequestHeaders - Mesh request header mutation
+                      properties:
+                        mutations:
+                          items:
+                            properties:
+                              appendIfAbsent:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                              appendOrAdd:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                              remove:
+                                type: string
+                              replaceIfExists:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                              replaceOrAdd:
+                                properties:
+                                  header:
+                                    type: string
+                                  rawValue:
+                                    type: string
+                                  value:
+                                    type: string
+                                type: object
+                            type: object
+                          minItems: 1
+                          type: array
+                        ports:
+                          items:
+                            format: int32
+                            type: integer
+                          minItems: 1
+                          type: array
+                      required:
+                      - mutations
+                      type: object
+                    meshRequestHeadersPerRoute:
+                      description: MeshRequestHeadersPerRoute - Mesh request header
+                        mutation per route
+                      properties:
+                        routes:
+                          items:
+                            properties:
+                              mutations:
+                                items:
+                                  properties:
+                                    appendIfAbsent:
+                                      properties:
+                                        header:
+                                          type: string
+                                        rawValue:
+                                          type: string
+                                        value:
+                                          type: string
+                                      type: object
+                                    appendOrAdd:
+                                      properties:
+                                        header:
+                                          type: string
+                                        rawValue:
+                                          type: string
+                                        value:
+                                          type: string
+                                      type: object
+                                    remove:
+                                      type: string
+                                    replaceIfExists:
+                                      properties:
+                                        header:
+                                          type: string
+                                        rawValue:
+                                          type: string
+                                        value:
+                                          type: string
+                                      type: object
+                                    replaceOrAdd:
+                                      properties:
+                                        header:
+                                          type: string
+                                        rawValue:
+                                          type: string
+                                        value:
+                                          type: string
+                                      type: object
+                                  type: object
+                                minItems: 1
+                                type: array
+                              pathMatches:
+                                items:
+                                  properties:
+                                    contains:
+                                      type: string
+                                    exact:
+                                      type: string
+                                    ignoreCase:
+                                      type: boolean
+                                    prefix:
+                                      type: string
+                                    safeRegex:
+                                      properties:
+                                        regex:
+                                          type: string
+                                      required:
+                                      - regex
+                                      type: object
+                                    suffix:
+                                      type: string
+                                  type: object
+                                minItems: 1
+                                type: array
+                              port:
+                                format: int32
+                                type: integer
+                            required:
+                            - mutations
+                            - pathMatches
+                            - port
+                            type: object
+                          minItems: 1
+                          type: array
+                      required:
+                      - routes
+                      type: object
+                    mixedMode:
+                      properties:
+                        ports:
+                          items:
+                            properties:
+                              port:
+                                format: int32
+                                type: integer
+                              targetPort:
+                                format: int32
+                                type: integer
+                            required:
+                            - port
+                            - targetPort
+                            type: object
+                          minItems: 1
+                          type: array
+                      required:
+                      - ports
+                      type: object
+                    oauth2:
+                      description: OAuth2Filter - enables a client to support for
+                        OAuth2
+                      properties:
+                        allowAuthorizationHeader:
+                          default: false
+                          type: boolean
+                        allowMtlsPassthrough:
+                          default: false
+                          type: boolean
+                        authScopes:
+                          items:
+                            type: string
+                          type: array
+                        authorizationRules:
+                          items:
+                            properties:
+                              employeeTypes:
+                                items:
+                                  enum:
+                                  - EMPLOYEE
+                                  - CONTINGENT
+                                  - SERVICE_ACCOUNT
+                                  type: string
+                                type: array
+                              groups:
+                                items:
+                                  type: string
+                                type: array
+                              methods:
+                                items:
+                                  enum:
+                                  - CONNECT
+                                  - DELETE
+                                  - GET
+                                  - HEAD
+                                  - OPTIONS
+                                  - PATCH
+                                  - POST
+                                  - PUT
+                                  - TRACE
+                                  type: string
+                                type: array
+                              path:
+                                type: string
+                              rpath:
+                                type: string
+                              workloadOwnerAccess:
+                                description: WorkloadOwnerAccessType represents workload
+                                  owner access permission
+                                enum:
+                                - allowed
+                                type: string
+                            type: object
+                          type: array
+                        forwardBearerToken:
+                          default: false
+                          type: boolean
+                        oauthClient:
+                          properties:
+                            clientId:
+                              type: string
+                            falconInstance:
+                              type: string
+                            serviceProvider:
+                              type: string
+                            useMtlsTokenEndpoint:
+                              default: false
+                              type: boolean
+                          required:
+                          - clientId
+                          - serviceProvider
+                          type: object
+                        ports:
+                          items:
+                            format: int32
+                            type: integer
+                          type: array
+                        providers:
+                          items:
+                            properties:
+                              audiences:
+                                items:
+                                  type: string
+                                type: array
+                              falconInstance:
+                                type: string
+                              serviceProvider:
+                                type: string
+                            required:
+                            - audiences
+                            - serviceProvider
+                            type: object
+                          type: array
+                        redirectURI:
+                          type: string
+                      required:
+                      - redirectURI
+                      type: object
+                    payloadStats:
+                      description: |-
+                        StatsFilter - Enable cluster stats
+                        https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto#config-cluster-v3-trackclusterstats
+                      properties:
+                        inbound:
+                          description: InboundStats - inbound cluster is matched with
+                            k8s service ports
+                          properties:
+                            ports:
+                              items:
+                                format: int32
+                                type: integer
+                              type: array
+                          type: object
+                        outbound:
+                          description: OutboundStats - outbound cluster is matched
+                            with k8s service FQDN
+                          properties:
+                            serviceFQDN:
+                              type: string
+                          required:
+                          - serviceFQDN
+                          type: object
+                      type: object
+                    proxyProtocol:
+                      description: ProxyProtocolFilter - Enable proxy protocol configuration
+                        for TCP proxying
+                      properties:
+                        connectTimeout:
+                          default: 10s
+                          description: Connection timeout for clusters
+                          type: string
+                        port:
+                          description: Port number to apply proxy protocol configuration
+                          format: int32
+                          minimum: 1
+                          type: integer
+                      required:
+                      - port
+                      type: object
+                    serverMaxOutboundFrames:
+                      description: ServerMaxOutboundFrames - HTTP2 max-outbound-frames
+                        configs
+                      properties:
+                        maxFrames:
+                          default: 10000
+                          format: int32
+                          minimum: 10000
+                          type: integer
+                        port:
+                          format: int32
+                          type: integer
+                      required:
+                      - maxFrames
+                      - port
+                      type: object
+                    simpleTlsDowngrade:
+                      description: SimpleTlsDowngrade -  Configures the sidecar to
+                        enforce SIMPLE TLS termination on the specified inbound ports
+                      properties:
+                        ports:
+                          items:
+                            format: int32
+                            type: integer
+                          minItems: 1
+                          type: array
+                      required:
+                      - ports
+                      type: object
+                    sparkConfiguration:
+                      description: SparkConfiguration - inputs needed to generate
+                        static mesh config for Flowsnake services
+                      properties:
+                        egressHosts:
+                          items:
+                            type: string
+                          type: array
+                        enabled:
+                          default: true
+                          type: boolean
+                        ports:
+                          items:
+                            properties:
+                              name:
+                                type: string
+                              port:
+                                format: int32
+                                type: integer
+                            required:
+                            - name
+                            - port
+                            type: object
+                          type: array
+                        selectorLabels:
+                          items:
+                            description: KeyValuePair - A key-value pair
+                            properties:
+                              key:
+                                type: string
+                              value:
+                                type: string
+                            required:
+                            - key
+                            - value
+                            type: object
+                          minItems: 1
+                          type: array
+                      required:
+                      - selectorLabels
+                      type: object
+                    telemetry:
+                      description: TelemetryConfig - Allows configuration of telemetry
+                        API
+                      properties:
+                        accessLog:
+                          description: AccessLogConfig - Telemetry access log config
+                          properties:
+                            enabled:
+                              type: boolean
+                            minimal:
+                              default: false
+                              type: boolean
+                          required:
+                          - enabled
+                          type: object
+                        tracing:
+                          description: TracingConfig - Telemetry tracing config
+                          properties:
+                            mode:
+                              default: CLIENT_AND_SERVER
+                              enum:
+                              - CLIENT_AND_SERVER
+                              - CLIENT
+                              - SERVER
+                              type: string
+                            samplingPercentage:
+                              default:
+                                denominator: HUNDRED
+                                numerator: 1
+                              properties:
+                                denominator:
+                                  default: HUNDRED
+                                  enum:
+                                  - HUNDRED
+                                  - TEN_THOUSAND
+                                  - MILLION
+                                  type: string
+                                numerator:
+                                  default: 100
+                                  type: integer
+                              type: object
+                          type: object
+                      type: object
+                  type: object
+                type: array
+              overlays:
+                items:
+                  properties:
+                    kind:
+                      enum:
+                      - VirtualService
+                      - DestinationRule
+                      type: string
+                    name:
+                      type: string
+                    strategicMergePatch:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
+                  required:
+                  - strategicMergePatch
+                  type: object
+                type: array
+              serviceSelector:
+                additionalProperties:
+                  type: string
+                type: object
+              templateType:
+                type: string
+            type: object
+          status:
+            description: MeshOperatorStatus defines the observed state of MeshOperator
+            properties:
+              lastReconciledTime:
+                format: date-time
+                type: string
+              message:
+                type: string
+              namespaceHash:
+                type: string
+              observedGeneration:
+                format: int64
+                type: integer
+              phase:
+                description: 'Phase, Message of MOP level configuration errors:'
+                enum:
+                - Pending
+                - Succeeded
+                - Failed
+                - Terminating
+                - Unknown
+                type: string
+              relatedResources:
+                items:
+                  description: ResourceStatus defines the status and details of the
+                    generated resource
+                  properties:
+                    apiVersion:
+                      type: string
+                    kind:
+                      type: string
+                    message:
+                      type: string
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+                    phase:
+                      enum:
+                      - Pending
+                      - Succeeded
+                      - Failed
+                      - Terminating
+                      - Unknown
+                      type: string
+                    uid:
+                      type: string
+                  required:
+                  - apiVersion
+                  - kind
+                  - name
+                  - phase
+                  type: object
+                type: array
+              serviceEntries:
+                additionalProperties:
+                  description: ServiceStatus defines the status per Service including
+                    resources generated for the Service
+                  properties:
+                    hash:
+                      type: string
+                    message:
+                      type: string
+                    phase:
+                      enum:
+                      - Pending
+                      - Succeeded
+                      - Failed
+                      - Terminating
+                      - Unknown
+                      type: string
+                    relatedResources:
+                      items:
+                        description: ResourceStatus defines the status and details
+                          of the generated resource
+                        properties:
+                          apiVersion:
+                            type: string
+                          kind:
+                            type: string
+                          message:
+                            type: string
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                          phase:
+                            enum:
+                            - Pending
+                            - Succeeded
+                            - Failed
+                            - Terminating
+                            - Unknown
+                            type: string
+                          uid:
+                            type: string
+                        required:
+                        - apiVersion
+                        - kind
+                        - name
+                        - phase
+                        type: object
+                      type: array
+                  required:
+                  - phase
+                  type: object
+                type: object
+              services:
+                additionalProperties:
+                  description: ServiceStatus defines the status per Service including
+                    resources generated for the Service
+                  properties:
+                    hash:
+                      type: string
+                    message:
+                      type: string
+                    phase:
+                      enum:
+                      - Pending
+                      - Succeeded
+                      - Failed
+                      - Terminating
+                      - Unknown
+                      type: string
+                    relatedResources:
+                      items:
+                        description: ResourceStatus defines the status and details
+                          of the generated resource
+                        properties:
+                          apiVersion:
+                            type: string
+                          kind:
+                            type: string
+                          message:
+                            type: string
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                          phase:
+                            enum:
+                            - Pending
+                            - Succeeded
+                            - Failed
+                            - Terminating
+                            - Unknown
+                            type: string
+                          uid:
+                            type: string
+                        required:
+                        - apiVersion
+                        - kind
+                        - name
+                        - phase
+                        type: object
+                      type: array
+                  required:
+                  - phase
+                  type: object
+                type: object
+            required:
+            - phase
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

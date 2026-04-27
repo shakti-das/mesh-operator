@@ -1,0 +1,47 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: istio-shipping-bg1-7443
+  namespace: test-namespace
+spec:
+  http:
+    - match:
+        - authority:
+            prefix: istio-shipping-bg-preview.test-namespace.svc.mesh.sfdc.net
+        - headers:
+            ctx-mesh-test-traffic:
+              exact: "true"
+        - uri:
+            prefix: /gpt/prod  # uri different from overlay uri
+      name: blue-green
+      retries:
+        attempts: 5
+        retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+        retryRemoteLocalities: true
+      route:
+        - destination:
+            host: istio-shipping-bg.test-namespace.svc.cluster.local
+            port:
+              number: 7443
+            subset: stable
+          weight: 100
+        - destination:
+            host: istio-shipping-bg.test-namespace.svc.cluster.local
+            port:
+              number: 7443
+            subset: preview
+          weight: 0
+      timeout: 15s
+    - name: always-stable
+      retries:
+        attempts: 5
+        retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+        retryRemoteLocalities: true
+      route:
+        - destination:
+            host: istio-shipping-bg.test-namespace.svc.cluster.local
+            port:
+              number: 7443
+            subset: stable
+      timeout: 15s
+

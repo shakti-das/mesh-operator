@@ -1,0 +1,20 @@
+{
+  "spec": {
+    "http": [
+      {
+        "name": "additional-route",
+        "timeout": "5s",
+        "retries": {
+          "attempts": 3
+        },
+        "route": [
+          {
+            "destination": {
+              "host": "additional.my.service.prod.mesh.io"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

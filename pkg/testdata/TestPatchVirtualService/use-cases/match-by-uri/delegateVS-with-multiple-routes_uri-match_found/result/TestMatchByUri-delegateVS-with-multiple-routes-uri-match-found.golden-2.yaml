@@ -1,0 +1,50 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: istio-shipping1-7442
+  namespace: test-namespace
+spec:
+  http:
+  - headers:
+      request:
+        set:
+          x-cloud-cost-id: Salesforce DX
+    match:
+    - authority:
+        prefix: istio-shipping-bg-preview.test-namespace.svc.mesh.sfdc.net
+    - headers:
+        ctx-mesh-test-traffic:
+          exact: "true"
+    - uri:
+        prefix: /gpt/dev
+    name: blue-green
+    retries:
+      attempts: 5
+      retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+      retryRemoteLocalities: true
+    route:
+    - destination:
+        host: istio-shipping-bg.test-namespace.svc.cluster.local
+        port:
+          number: 7442
+        subset: stable
+      weight: 100
+    - destination:
+        host: istio-shipping-bg.test-namespace.svc.cluster.local
+        port:
+          number: 7442
+        subset: preview
+      weight: 0
+    timeout: 15s
+  - name: always-stable
+    retries:
+      attempts: 5
+      retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+      retryRemoteLocalities: true
+    route:
+    - destination:
+        host: istio-shipping-bg.test-namespace.svc.cluster.local
+        port:
+          number: 7442
+        subset: stable
+    timeout: 15s

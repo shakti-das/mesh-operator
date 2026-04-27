@@ -1,0 +1,11 @@
+- kind: DestinationRule
+  name: ora1-hsr-app
+  strategicMergePatch:
+    spec:
+      subsets:
+      - labels:
+          version: green
+        name: live
+      - labels:
+          version: green
+        name: test

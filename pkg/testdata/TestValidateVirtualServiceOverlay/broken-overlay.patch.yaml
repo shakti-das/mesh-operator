@@ -1,0 +1,7 @@
+spec:
+  http:
+    - name: http-7443
+      match:
+        - port 7443
+      retries:
+        attempts: 4

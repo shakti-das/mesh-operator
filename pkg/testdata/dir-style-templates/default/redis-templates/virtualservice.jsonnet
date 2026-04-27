@@ -1,0 +1,1 @@
+"test virtual service from redis-templates"

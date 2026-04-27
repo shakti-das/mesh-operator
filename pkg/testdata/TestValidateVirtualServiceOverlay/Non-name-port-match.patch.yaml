@@ -1,0 +1,8 @@
+spec:
+  http:
+    - name: route-7443
+      match:
+        - port: 7443
+          uri:
+            prefix: "/some-page"
+      timeout: 25s

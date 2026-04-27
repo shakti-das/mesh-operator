@@ -1,0 +1,35 @@
+{
+  "spec": {
+    "http": [
+      {
+        "match": [
+          {
+            "uri": {
+              "prefix": "/gpt/dev"
+            }
+          }
+        ],
+        "route": [
+          {
+            "destination": {
+              "host": "istio-shipping-stateful-0.istio-shipping-stateful.service-mesh.svc.cluster.local",
+              "port": {
+                "number": 15375
+              }
+            },
+            "weight": 50
+          },
+          {
+            "destination": {
+              "host": "istio-shipping-stateful-1.istio-shipping-stateful.service-mesh.svc.cluster.local",
+              "port": {
+                "number": 15375
+              }
+            },
+            "weight": 50
+          }
+        ]
+      }
+    ]
+  }
+}

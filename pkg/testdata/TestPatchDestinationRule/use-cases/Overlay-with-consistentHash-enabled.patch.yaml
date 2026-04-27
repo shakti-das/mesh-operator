@@ -1,0 +1,6 @@
+spec:
+  host: istio-shipping.service-mesh.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpHeaderName: "header-name"

@@ -1,0 +1,25 @@
+{
+  "spec": {
+    "http" : [
+      {
+        "name": "bg_test_green",
+        "fault": {
+          "abort": {
+            "httpStatus": 500
+          }
+        },
+        "route": [
+          {
+            "destination": {
+              "host": "bg1-app",
+              "port": {
+                "number": 7442
+              },
+              "subset": "live"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

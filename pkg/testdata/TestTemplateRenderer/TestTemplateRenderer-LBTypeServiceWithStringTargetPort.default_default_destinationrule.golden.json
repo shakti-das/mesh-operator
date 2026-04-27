@@ -1,0 +1,12 @@
+[
+   {
+      "apiVersion": "networking.istio.io/v1alpha3",
+      "kind": "DestinationRule",
+      "metadata": {
+         "labels": {},
+         "name": "my-service-name",
+         "namespace": "test-namespace"
+      },
+      "spec": "template generated from test"
+   }
+]

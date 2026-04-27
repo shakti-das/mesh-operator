@@ -1,0 +1,6 @@
+spec:
+  http:
+    - match:
+        - method:
+            header: "GET"
+      timeout: 25s

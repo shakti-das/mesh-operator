@@ -1,0 +1,233 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: (unknown)
+  name: trafficshardingpolicies.mesh.io
+spec:
+  group: mesh.io
+  names:
+    kind: TrafficShardingPolicy
+    listKind: TrafficShardingPolicyList
+    plural: trafficshardingpolicies
+    shortNames:
+    - tsp
+    singular: trafficshardingpolicy
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.state
+      name: State
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              routes:
+                description: |-
+                  List of routing rules that are evaluated by priority (higher priority first).
+                  The last route must be the default route (with empty headers match).
+                items:
+                  description: TSPRoute defines a single routing rule with match conditions
+                    and destination for Traffic Sharding Policy.
+                  properties:
+                    destination:
+                      description: Destination configuration for matching traffic.
+                      properties:
+                        cell:
+                          description: Route to a specific named cell.
+                          type: string
+                        cellType:
+                          description: Route to instances of a specific cell type
+                            (e.g., "core", "sdb").
+                          type: string
+                        hashPolicy:
+                          description: |-
+                            Hash policy for hash-based distribution across cells.
+                            Only applicable if the target is a cellType.
+                          properties:
+                            headerName:
+                              description: Use value from specified HTTP header.
+                              type: string
+                            xfccConfig:
+                              description: Extract components from XFCC header.
+                              properties:
+                                keys:
+                                  description: |-
+                                    List of XFCC components to use for hash computation.
+                                    Components are concatenated in order before hashing.
+                                  items:
+                                    description: TSPXFCCKey defines the components
+                                      available in XFCC header for hashing.
+                                    enum:
+                                    - XFCC_KEY_UNSPECIFIED
+                                    - SERVICE
+                                    - NAMESPACE
+                                    - CELL
+                                    - FUNCTIONAL_DOMAIN
+                                    type: string
+                                  minItems: 1
+                                  type: array
+                              required:
+                              - keys
+                              type: object
+                          type: object
+                        serviceInstance:
+                          description: Route to specific service instance.
+                          type: string
+                        shuffleShardingPolicy:
+                          description: |-
+                            Shuffle shard policy for shuffle-sharding within a cell/service-instance.
+                            Only applicable if the target is a cell or service-instance.
+                            If specified for a cellType, it gets applied within a cell that gets selected post consistent hashing.
+                          properties:
+                            header:
+                              description: |-
+                                Header specifies the HTTP header name whose value will be used to
+                                compute the hash for consistent shard assignment. This ensures that
+                                requests with the same header value are consistently routed to the same
+                                set of shards.
+                              type: string
+                            replicationFactor:
+                              description: |-
+                                Replication factor defines how many shards each client should be assigned to.
+                                For example, if there are 8 available hosts and replicationFactor is 2,
+                                each client will be randomly load balanced to 2 out of the 8 available backends,
+                                creating isolation between different clients while maintaining redundancy.
+                              format: int32
+                              minimum: 1
+                              type: integer
+                          required:
+                          - header
+                          - replicationFactor
+                          type: object
+                      type: object
+                    match:
+                      description: Match criteria for this rule.
+                      properties:
+                        headers:
+                          additionalProperties:
+                            description: |-
+                              TSPStringMatch specifies the match criteria for strings.
+                              Exactly one of exact, prefix, suffix, or regex must be set.
+                            properties:
+                              exact:
+                                description: Exact string match.
+                                type: string
+                              prefix:
+                                description: Prefix-based match.
+                                type: string
+                              regex:
+                                description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                type: string
+                              suffix:
+                                description: Suffix-based match.
+                                type: string
+                            type: object
+                          description: Map of header name to match criteria. All specified
+                            headers must match.
+                          type: object
+                      type: object
+                    name:
+                      description: Name of the rule for identification and debugging
+                        purposes.
+                      type: string
+                  required:
+                  - destination
+                  - match
+                  - name
+                  type: object
+                maxItems: 50
+                minItems: 1
+                type: array
+              serviceSelector:
+                description: Selector for identifying target services.
+                properties:
+                  labels:
+                    additionalProperties:
+                      type: string
+                    description: Key-value pairs of labels used to identify and select
+                      specific services.
+                    minProperties: 1
+                    type: object
+                required:
+                - labels
+                type: object
+                x-kubernetes-validations:
+                - message: serviceSelector.labels must include 'p_servicename' key
+                    with a non-empty value
+                  rule: '''p_servicename'' in self.labels && self.labels[''p_servicename'']
+                    != '''''
+            required:
+            - routes
+            - serviceSelector
+            type: object
+            x-kubernetes-validations:
+            - message: exactly one default route (with empty headers) is required
+              rule: self.routes.filter(r, !has(r.match.headers) || size(r.match.headers)
+                == 0).size() == 1
+            - message: the default route (empty headers) must be the last route
+              rule: '!has(self.routes[size(self.routes)-1].match.headers) || size(self.routes[size(self.routes)-1].match.headers)
+                == 0'
+          status:
+            properties:
+              matchedServices:
+                description: MatchedServices contains the list of services that matched
+                  the TSP selector
+                items:
+                  type: string
+                type: array
+              message:
+                description: Message provides additional information about the current
+                  state
+                type: string
+              observedGeneration:
+                description: ObservedGeneration reflects the generation of the most
+                  recently observed TrafficShardingPolicy
+                format: int64
+                type: integer
+              state:
+                allOf:
+                - enum:
+                  - Pending
+                  - Succeeded
+                  - Failed
+                  - Terminating
+                  - Unknown
+                - enum:
+                  - Pending
+                  - Succeeded
+                  - Failed
+                  - Unknown
+                default: Pending
+                description: State represents the current state of the TrafficShardingPolicy
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

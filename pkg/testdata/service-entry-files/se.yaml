@@ -1,0 +1,23 @@
+apiVersion: v1beta1
+kind: ServiceEntry
+metadata:
+  labels:
+    app: external-serviceentry
+  name: external-serviceentry
+  namespace: service-mesh
+  uid: 12345359-ffb5-11e9-9d67-066e71ca21fh
+spec:
+  endpoints:
+    - address: external-serviceentry.someteam.dev1.pc-rnd.example.com
+      labels:
+        app: external-serviceentry
+      ports:
+        grpc-7443: 7443
+  hosts:
+    - external-serviceentry.someteam.dev1.pc-rnd.example.com
+  location: MESH_EXTERNAL
+  ports:
+    - name: grpc-7443
+      number: 7443
+      protocol: grpc
+  resolution: DNS

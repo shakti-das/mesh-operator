@@ -1,0 +1,24 @@
+{
+  "apiVersion": "mesh.io/v1alpha1",
+  "kind": "MeshOperator",
+  "metadata": {
+    "name": "testmop",
+    "namespace": "service-mesh",
+    "uid": "76f59811-ae83-4b1a-a220-003874d897a4"
+  },
+  "spec": {
+    "extensions": [
+      {
+        "faultInjection": {
+          "delay": {
+            "fixedDelay": "1s",
+            "percentage": {
+              "numerator": 10,
+              "denominator": "HUNDRED"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

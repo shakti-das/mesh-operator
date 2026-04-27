@@ -1,0 +1,8 @@
+spec:
+  http:
+    - match:
+        - uri:
+            prefix: "/some-page"
+          method:
+            header: "GET"
+      timeout: 25s

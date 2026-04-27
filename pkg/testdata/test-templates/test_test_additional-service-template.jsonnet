@@ -1,0 +1,3 @@
+{
+   additionalServiceTemplate: "test"
+}

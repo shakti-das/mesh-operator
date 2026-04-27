@@ -1,0 +1,9 @@
+spec:
+  http:
+    - match:
+        - uri:
+            prefix: "/some-page"
+          port: 7442
+          method:
+            header: "GET"
+      timeout: 25s

@@ -1,0 +1,1 @@
+"test destination rule from redis-templates"

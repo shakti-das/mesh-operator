@@ -1,0 +1,14 @@
+{
+  "spec": {
+    "http": [
+      {
+        "match": [
+          {
+            "port": 123
+          }
+        ],
+        "$patch": "delete"
+      }
+    ]
+  }
+}

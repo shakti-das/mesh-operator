@@ -1,0 +1,15 @@
+[
+   {
+      "apiVersion": "networking.istio.io/v1alpha3",
+      "kind": "VirtualService",
+      "metadata": {
+         "labels": {
+            "app": "my-app",
+            "app_instance": "my-identity"
+         },
+         "name": "my-service-name",
+         "namespace": "remote-namespace"
+      },
+      "spec": "template generated from test"
+   }
+]

@@ -1,0 +1,10 @@
+{
+  "spec": {
+    "$deleteFromPrimitiveList/hosts": [
+        "my.service.mesh.io"
+    ],
+    "hosts": [
+        "additional.host.my.sevice.mesh.io"
+    ]
+  }
+}

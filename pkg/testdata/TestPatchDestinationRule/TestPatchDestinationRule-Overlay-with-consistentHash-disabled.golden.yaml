@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  labels:
+    app: istio-shipping
+  name: istio-shipping
+  namespace: service-mesh
+spec:
+  host: istio-shipping.service-mesh.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      http:
+        http1MaxPendingRequests: 1024
+        http2MaxRequests: 10000
+        maxRetries: 10
+      tcp:
+        maxConnections: 10000
+        tcpKeepalive:
+          time: 300s
+    loadBalancer:
+      localityLbSetting:
+        enabled: true
+      simple: LEAST_CONN
+    outlierDetection:
+      baseEjectionTime: 30s
+      consecutive5xxErrors: 5
+      maxEjectionPercent: 50
+    tls:
+      caCertificates: /etc/certs/root-cert.pem
+      clientCertificate: /etc/certs/client.pem
+      mode: MUTUAL
+      privateKey: /etc/certs/client-key.pem
+      subjectAltNames:
+      - istio-shipping.service-mesh.sfdc-role

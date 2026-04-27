@@ -1,0 +1,9 @@
+spec:
+  http:
+    - match:
+        - port: 7443
+      timeout: 25s
+  tls:
+    - match:
+        - port: 7443
+      timeout: 25s

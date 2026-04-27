@@ -1,0 +1,23 @@
+{
+  "spec": {
+    "http": [
+      {
+        "match": [
+          {
+            "uri": {
+              "prefix": "/gpt/dev"
+            },
+            "port": 7442
+          }
+        ],
+        "headers": {
+          "request": {
+            "set": {
+              "x-cloud-cost-id": "Salesforce DX"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

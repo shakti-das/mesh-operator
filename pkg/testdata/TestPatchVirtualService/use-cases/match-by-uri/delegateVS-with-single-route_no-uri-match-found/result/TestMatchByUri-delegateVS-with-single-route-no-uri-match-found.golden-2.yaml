@@ -1,0 +1,63 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: istio-shipping1-7443
+  namespace: test-namespace
+spec:
+  http:
+  - headers:
+      request:
+        set:
+          x-cloud-cost-id: Salesforce DX
+          x-salesforce-tls-cipher: '%DOWNSTREAM_TLS_CIPHER%'
+          x-salesforce-tls-source: '%DOWNSTREAM_REMOTE_ADDRESS%'
+          x-salesforce-tls-version: '%DOWNSTREAM_TLS_VERSION%'
+          x-tls-cipher: '%DOWNSTREAM_TLS_CIPHER%'
+          x-tls-source: '%DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT%'
+          x-tls-version: '%DOWNSTREAM_TLS_VERSION%'
+      response:
+        remove:
+        - server
+        - x-aspnet-version
+        - x-powered-by
+        - x-envoy-upstream-service-time
+    match:
+    - uri:
+        prefix: /gpt/dev
+    name: http-delegate-7443-uri-injected
+    retries:
+      attempts: 5
+      retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+      retryRemoteLocalities: true
+    route:
+    - destination:
+        host: istio-shipping.test-namespace.svc.cluster.local
+        port:
+          number: 7443
+    timeout: 15s
+  - headers:
+      request:
+        set:
+          x-salesforce-tls-cipher: '%DOWNSTREAM_TLS_CIPHER%'
+          x-salesforce-tls-source: '%DOWNSTREAM_REMOTE_ADDRESS%'
+          x-salesforce-tls-version: '%DOWNSTREAM_TLS_VERSION%'
+          x-tls-cipher: '%DOWNSTREAM_TLS_CIPHER%'
+          x-tls-source: '%DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT%'
+          x-tls-version: '%DOWNSTREAM_TLS_VERSION%'
+      response:
+        remove:
+        - server
+        - x-aspnet-version
+        - x-powered-by
+        - x-envoy-upstream-service-time
+    name: http-delegate-7443
+    retries:
+      attempts: 5
+      retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+      retryRemoteLocalities: true
+    route:
+    - destination:
+        host: istio-shipping.test-namespace.svc.cluster.local
+        port:
+          number: 7443
+    timeout: 15s

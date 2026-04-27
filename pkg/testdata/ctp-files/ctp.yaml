@@ -1,0 +1,18 @@
+{
+  "clusterTrafficPolicy": {
+    "apiVersion": "mesh.io/v1alpha1",
+    "kind": "ClusterTrafficPolicy",
+    "metadata": {
+      "name": "istio-shipping",
+      "namespace": "default"
+    },
+    "spec": {
+      "clusterTrafficStrategy": {
+        "blueGreen": {
+          "previewCluster": "c3",
+          "stableCluster": "c2"
+        }
+      }
+    }
+  }
+}

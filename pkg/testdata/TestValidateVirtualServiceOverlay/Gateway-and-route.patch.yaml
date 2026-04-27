@@ -1,0 +1,7 @@
+spec:
+  gateways:
+    - mygateway
+  http:
+    - match:
+        - port: 7443
+      timeout: 25s

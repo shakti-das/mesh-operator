@@ -1,0 +1,26 @@
+{
+  "spec": {
+    "http": [
+      {
+        "match": [
+          {
+            "port": 333
+          }
+        ],
+        "timeout": "9s"
+      }
+    ]
+  },
+  "spec": {
+    "http": [
+      {
+        "match": [
+          {
+            "port": 123
+          }
+        ],
+        "timeout": "3s"
+      }
+    ]
+  }
+}

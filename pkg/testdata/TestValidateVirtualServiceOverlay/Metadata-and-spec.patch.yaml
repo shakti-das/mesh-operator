@@ -1,0 +1,6 @@
+metadata:
+  labels:
+    my-label: my-value
+spec:
+  gateways:
+    - mygateway

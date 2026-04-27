@@ -1,0 +1,12 @@
+spec:
+  trafficPolicy:
+    outlierDetection:
+      baseEjectionTime: 1h
+      consecutive5xxErrors: 1
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http2MaxRequests: 100
+    loadBalancer:
+      warmupDurationSecs: 3m

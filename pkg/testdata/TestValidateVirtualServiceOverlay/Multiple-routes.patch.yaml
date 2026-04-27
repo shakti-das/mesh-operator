@@ -1,0 +1,8 @@
+spec:
+  http:
+    - match:
+        - port: 7443
+      timeout: 25s
+    - match:
+        - port: 8080
+      timeout: 30s

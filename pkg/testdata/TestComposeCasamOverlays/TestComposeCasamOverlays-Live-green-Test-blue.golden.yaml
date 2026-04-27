@@ -1,0 +1,73 @@
+- kind: DestinationRule
+  name: ora1-casam-app
+  strategicMergePatch:
+    spec:
+      subsets:
+      - labels:
+          version: green
+        name: live
+      - labels:
+          version: green
+        name: sticky-live
+      - labels:
+          version: blue
+        name: test
+      - labels:
+          version: blue
+        name: sticky-test
+- kind: VirtualService
+  strategicMergePatch:
+    spec:
+      http:
+      - fault:
+          abort:
+            httpStatus: 500
+        name: casam_readiness_blue
+        route:
+        - destination:
+            host: ora1-casam-app
+            port:
+              number: 7442
+            subset: test
+- kind: VirtualService
+  strategicMergePatch:
+    spec:
+      http:
+      - fault:
+          abort:
+            httpStatus: 200
+        name: casam_test_blue
+        route:
+        - destination:
+            host: ora1-casam-app
+            port:
+              number: 7442
+            subset: test
+- kind: VirtualService
+  strategicMergePatch:
+    spec:
+      http:
+      - fault:
+          abort:
+            httpStatus: 200
+        name: casam_readiness_green
+        route:
+        - destination:
+            host: ora1-casam-app
+            port:
+              number: 7442
+            subset: live
+- kind: VirtualService
+  strategicMergePatch:
+    spec:
+      http:
+      - fault:
+          abort:
+            httpStatus: 500
+        name: casam_test_green
+        route:
+        - destination:
+            host: ora1-casam-app
+            port:
+              number: 7442
+            subset: live

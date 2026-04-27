@@ -1,0 +1,12 @@
+{
+  "spec": {
+    "http": [
+      {
+        "name": "route-in-position-1",
+        "retries": {
+          "attempts": 3
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,76 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: istio-shipping
+  namespace: test-namespace
+spec:
+  gateways:
+  - mesh
+  hosts:
+  - istio-shipping.test-namespace.svc.cluster.local
+  - istio-shipping.test-namespace.svc.mesh.sfdc.net
+  http:
+  - headers:
+      request:
+        set:
+          x-cloud-cost-id: Salesforce DX
+    match:
+    - port: 7442
+      uri:
+        prefix: /gpt/dev
+    name: http-7442-uri-injected
+    retries:
+      attempts: 5
+      retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+      retryRemoteLocalities: true
+    route:
+    - destination:
+        host: istio-shipping.test-namespace.svc.cluster.local
+        port:
+          number: 7442
+    timeout: 15s
+  - match:
+    - port: 7442
+    name: http-7442
+    retries:
+      attempts: 5
+      retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+      retryRemoteLocalities: true
+    route:
+    - destination:
+        host: istio-shipping.test-namespace.svc.cluster.local
+        port:
+          number: 7442
+    timeout: 15s
+  - headers:
+      request:
+        set:
+          x-cloud-cost-id: Salesforce DX
+    match:
+    - port: 7443
+      uri:
+        prefix: /gpt/dev
+    name: http-7443-uri-injected
+    retries:
+      attempts: 5
+      retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+      retryRemoteLocalities: true
+    route:
+    - destination:
+        host: istio-shipping.test-namespace.svc.cluster.local
+        port:
+          number: 7443
+    timeout: 15s
+  - match:
+    - port: 7443
+    name: http-7443
+    retries:
+      attempts: 5
+      retryOn: cancelled,connect-failure,gateway-error,refused-stream,resource-exhausted,unavailable,retriable-status-codes
+      retryRemoteLocalities: true
+    route:
+    - destination:
+        host: istio-shipping.test-namespace.svc.cluster.local
+        port:
+          number: 7443
+    timeout: 15s
