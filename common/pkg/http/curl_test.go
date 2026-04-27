@@ -7,11 +7,10 @@ import (
 )
 
 func TestHTTPRequest(t *testing.T) {
-	// Notes: This test is being skipped as part of monorepo migration.
-	// It is passing locally, but fails in CI with "HTTP/1.1 426 Upgrade Required"
-	// Possibly due to connectivity?
-	// To see failure, unskip this test & create a PR.
-	t.Skip("This test is failing in CI, possibly due to SFCI falcon connectivity?")
+	// Skipped: this test hits an external HTTP endpoint and fails in sandboxed
+	// CI environments with "HTTP/1.1 426 Upgrade Required". Unskip locally to
+	// reproduce.
+	t.Skip("skipping: requires outbound HTTP connectivity")
 
 	testCases := []struct {
 		name     string

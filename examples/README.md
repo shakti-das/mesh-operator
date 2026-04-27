@@ -54,7 +54,7 @@ kubectl apply -f examples/use-cases/basic/
 # 5. Run mesh-operator against the cluster (it reads ~/.kube/config)
 go run ./cmd/mesh-operator server \
   --config-namespace=istio-system \
-  --templates-location=./examples/templates \
+  --template-paths=./examples/templates \
   --template-selector-labels=app \
   --leader-elect=false
 
