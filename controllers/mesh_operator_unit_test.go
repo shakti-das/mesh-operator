@@ -13,21 +13,21 @@ import (
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	error2 "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/errors"
+	error2 "github.com/istio-ecosystem/mesh-operator/pkg/errors"
 
-	commonmetrics "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
+	commonmetrics "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
 
 	"k8s.io/apimachinery/pkg/runtime"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
-	metricstesting "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics/testing"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controller_test"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/resources_test"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating_test"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
+	metricstesting "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics/testing"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controller_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/resources_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating_test"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap/zaptest"

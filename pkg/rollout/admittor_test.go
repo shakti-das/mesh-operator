@@ -5,25 +5,25 @@ import (
 	"strings"
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/secretdiscovery"
+	"github.com/istio-ecosystem/mesh-operator/pkg/secretdiscovery"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/alias"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/alias"
 
 	"k8s.io/apimachinery/pkg/runtime"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
-	metricstesting "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics/testing"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
+	metricstesting "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics/testing"
 
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
@@ -31,8 +31,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	k8sfake "k8s.io/client-go/kubernetes/fake"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 
 	v1 "k8s.io/api/admission/v1"
 )
@@ -686,7 +686,7 @@ func TestAdmitForRollout(t *testing.T) {
 			}()
 			//test setup
 			logger := zaptest.NewLogger(t).Sugar()
-			mutationTemplatePaths := []string{"projects/services/servicemesh/mesh-operator/pkg/testdata/mutation-templates/"}
+			mutationTemplatePaths := []string{"../testdata/mutation-templates/"}
 			stopCh := make(chan struct{})
 			clusterName := primaryClusterName
 			if !tc.isPrimary {

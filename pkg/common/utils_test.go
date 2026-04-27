@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/alias"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/alias"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
@@ -112,23 +112,23 @@ func TestGetAttributeOrAlias(t *testing.T) {
 	metaObj := metav1.ObjectMeta{
 		Name: "test-meta-object",
 		Annotations: map[string]string{
-			"routing.mesh.sfdc.net/enabled":           "true",
-			"routing.mesh.sfdc.net/template":          "test-template",
-			"routing.mesh.sfdc.net/testing":           "test-svc",
+			"routing.mesh.io.example.com/enabled":           "true",
+			"routing.mesh.io.example.com/template":          "test-template",
+			"routing.mesh.io.example.com/testing":           "test-svc",
 			"routing.mesh.io/dynamic-routing-service": "dynamic-svc",
 		},
 		Labels: map[string]string{
-			"routing.mesh.sfdc.net/enabled":           "true",
-			"routing.mesh.sfdc.net/template":          "test-template",
-			"routing.mesh.sfdc.net/testing":           "test-svc",
+			"routing.mesh.io.example.com/enabled":           "true",
+			"routing.mesh.io.example.com/template":          "test-template",
+			"routing.mesh.io.example.com/testing":           "test-svc",
 			"routing.mesh.io/dynamic-routing-service": "dynamic-svc",
 		},
 	}
 
 	aliasesMap := map[string]string{
-		"routing.mesh.io/enabled":                 "routing.mesh.sfdc.net/enabled",
-		"routing.mesh.io/template":                "routing.mesh.sfdc.net/template:routing.mesh.sfdc.net/testing",
-		"routing.mesh.io/dynamic-routing-service": "routing.mesh.sfdc.net/dynamic-routing-enabled",
+		"routing.mesh.io/enabled":                 "routing.mesh.io.example.com/enabled",
+		"routing.mesh.io/template":                "routing.mesh.io.example.com/template:routing.mesh.io.example.com/testing",
+		"routing.mesh.io/dynamic-routing-service": "routing.mesh.io.example.com/dynamic-routing-enabled",
 	}
 
 	testCases := []struct {
@@ -163,7 +163,7 @@ func TestGetAttributeOrAlias(t *testing.T) {
 		{
 			name:          "no alias specified - original attribute found",
 			obj:           metaObj,
-			attribute:     constants.Attribute("routing.mesh.sfdc.net/enabled"),
+			attribute:     constants.Attribute("routing.mesh.io.example.com/enabled"),
 			aliasMap:      make(map[string]string),
 			expectedValue: "true",
 		},
@@ -193,20 +193,20 @@ func TestAnnotationHasPrefixOrAlias(t *testing.T) {
 	metaObj1 := metav1.ObjectMeta{
 		Name: "test-meta-object",
 		Annotations: map[string]string{
-			"routing.mesh.sfdc.net/template": "true",
+			"routing.mesh.io.example.com/template": "true",
 		},
 	}
 
 	metaObj2 := metav1.ObjectMeta{
 		Name: "test-meta-object2",
 		Annotations: map[string]string{
-			"template.mesh.sfdc.net/testing": "testing",
+			"template.mesh.io.example.com/testing": "testing",
 		},
 	}
 
 	annotationAliasesMap := map[string]string{
-		"routing.mesh.io/": "routing.mesh.sfdc.net/",
-		"testing.mesh.io/": "template.mesh.sfdc.net/:routing.mesh.sfdc.net/",
+		"routing.mesh.io/": "routing.mesh.io.example.com/",
+		"testing.mesh.io/": "template.mesh.io.example.com/:routing.mesh.io.example.com/",
 	}
 
 	testCases := []struct {
@@ -228,7 +228,7 @@ func TestAnnotationHasPrefixOrAlias(t *testing.T) {
 		{
 			name:                "alias specified - original prefix found",
 			obj:                 metaObj1,
-			attribute:           constants.Attribute("routing.mesh.sfdc.net/"),
+			attribute:           constants.Attribute("routing.mesh.io.example.com/"),
 			aliasMap:            annotationAliasesMap,
 			expectedPrefixFound: true,
 			expectedSuffix:      "template",
@@ -236,7 +236,7 @@ func TestAnnotationHasPrefixOrAlias(t *testing.T) {
 		{
 			name:                "no alias specified - original prefix found",
 			obj:                 metaObj2,
-			attribute:           constants.Attribute("template.mesh.sfdc.net/"),
+			attribute:           constants.Attribute("template.mesh.io.example.com/"),
 			aliasMap:            nil,
 			expectedPrefixFound: true,
 			expectedSuffix:      "testing",

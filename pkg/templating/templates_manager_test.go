@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap/zaptest"
@@ -25,8 +25,8 @@ func TestGetTemplatesByPrefix(t *testing.T) {
 		"default_default_destinationrule":    "default-dr-content",
 		"other-ns_other-svc_virtualservice":  "other-vs-content",
 		"other-ns_other-svc_destinationrule": "other-dr-content",
-		"core-on-sam_coreapp_vs":             "coreapp-content",
-		"core-on-sam_coreapp-bootstrap_vs":   "coreapp-bootstrap-content",
+		"example-coreapp_coreapp_vs":             "coreapp-content",
+		"example-coreapp_coreapp-bootstrap_vs":   "coreapp-bootstrap-content",
 	}
 	testCases := []struct {
 		name            string
@@ -45,10 +45,10 @@ func TestGetTemplatesByPrefix(t *testing.T) {
 		},
 		{
 			name:            "Two template types exists with common prefix",
-			lookupNamespace: "core-on-sam",
+			lookupNamespace: "example-coreapp",
 			lookupService:   "coreapp",
 			expectedResult: map[string]string{
-				"core-on-sam_coreapp_vs": "coreapp-content",
+				"example-coreapp_coreapp_vs": "coreapp-content",
 			},
 		},
 		{
@@ -173,22 +173,22 @@ func TestLoadTemplatesFromDirs(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(
 		t,
-		[]string{"/templates/path", "/templates/path/default", "/templates/path/default/redis-sfdcnet",
+		[]string{"/templates/path", "/templates/path/default", "/templates/path/default/redis",
 			"/templates/path/unified-engagement", "/templates/path/unified-engagement/rate-limiting-service"},
 		testFs.dirsRead)
 	assert.Equal(
 		t,
 		[]string{
-			"/templates/path/default/redis-sfdcnet/destinationrule.jsonnet",
-			"/templates/path/default/redis-sfdcnet/virtualservice.jsonnet",
+			"/templates/path/default/redis/destinationrule.jsonnet",
+			"/templates/path/default/redis/virtualservice.jsonnet",
 			"/templates/path/unified-engagement/rate-limiting-service/rate-limiting-service.jsonnet",
 		},
 		testFs.filesRead)
 	assert.Equal(
 		t,
 		map[string]string{
-			"default_redis-sfdcnet_destinationrule":                          "file-content",
-			"default_redis-sfdcnet_virtualservice":                           "file-content",
+			"default_redis_destinationrule":                          "file-content",
+			"default_redis_virtualservice":                           "file-content",
 			"unified-engagement_rate-limiting-service_rate-limiting-service": "file-content",
 		},
 		templates)
@@ -229,7 +229,7 @@ func TestLoadTemplatesFromFilesAndDirs(t *testing.T) {
 		[]string{
 			"/templates/dir/path",
 			"/templates/dir/path/default",
-			"/templates/dir/path/default/redis-sfdcnet",
+			"/templates/dir/path/default/redis",
 			"/templates/dir/path/unified-engagement",
 			"/templates/dir/path/unified-engagement/rate-limiting-service",
 			"/templates/path"},
@@ -237,8 +237,8 @@ func TestLoadTemplatesFromFilesAndDirs(t *testing.T) {
 	assert.Equal(
 		t,
 		[]string{
-			"/templates/dir/path/default/redis-sfdcnet/destinationrule.jsonnet",
-			"/templates/dir/path/default/redis-sfdcnet/virtualservice.jsonnet",
+			"/templates/dir/path/default/redis/destinationrule.jsonnet",
+			"/templates/dir/path/default/redis/virtualservice.jsonnet",
 			"/templates/dir/path/unified-engagement/rate-limiting-service/rate-limiting-service.jsonnet",
 			"/templates/path/default_default_destinationrule.jsonnet",
 			"/templates/path/default_default_virtualservice.jsonnet",
@@ -249,8 +249,8 @@ func TestLoadTemplatesFromFilesAndDirs(t *testing.T) {
 		map[string]string{
 			"default_default_destinationrule":                                "file-content",
 			"default_default_virtualservice":                                 "file-content",
-			"default_redis-sfdcnet_destinationrule":                          "file-content",
-			"default_redis-sfdcnet_virtualservice":                           "file-content",
+			"default_redis_destinationrule":                          "file-content",
+			"default_redis_virtualservice":                           "file-content",
 			"unified-engagement_rate-limiting-service_rate-limiting-service": "file-content",
 		},
 		templates)
@@ -258,7 +258,7 @@ func TestLoadTemplatesFromFilesAndDirs(t *testing.T) {
 
 func TestLoadTemplatesFromSymlinkDirs(t *testing.T) {
 	// cd dir-style-templates/some-namespace; ln -s ../default/redis-templates some-service-symlinked
-	templatePath := "projects/services/servicemesh/mesh-operator/pkg/testdata/dir-style-templates"
+	templatePath := "../testdata/dir-style-templates"
 
 	testFs := &testOs{os: &Os{}, filesRead: []string{}, dirsRead: []string{}}
 	manager := filesystemTemplatesManager{
@@ -575,13 +575,13 @@ func createTestDirStructure(templatePath string) map[string][]fs.FileInfo {
 	uePath := templatePath + TemplateNameSeparator + "unified-engagement"
 
 	dirs[defaultPath] = []fs.FileInfo{
-		&fakeFile{name: "redis-sfdcnet", dir: true},
+		&fakeFile{name: "redis", dir: true},
 	}
 	dirs[uePath] = []fs.FileInfo{
 		&fakeFile{name: "rate-limiting-service", dir: true},
 	}
 
-	dirs[defaultPath+TemplateNameSeparator+"redis-sfdcnet"] = []fs.FileInfo{
+	dirs[defaultPath+TemplateNameSeparator+"redis"] = []fs.FileInfo{
 		&fakeFile{name: "virtualservice.jsonnet"},
 		&fakeFile{name: "destinationrule.jsonnet"},
 	}

@@ -4,51 +4,45 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/common/pkg/fmtclient"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controllers_api"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/fmt/configprovider"
-	falconmetadata "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/fmt/metadata"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/fmt/metadata/monitoring"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controllers_api"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	constants2 "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/common/pkg/k8s/constants"
+	constants2 "github.com/istio-ecosystem/mesh-operator/common/pkg/k8s/constants"
 
 	goruntime "runtime"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/secretdiscovery"
+	"github.com/istio-ecosystem/mesh-operator/pkg/secretdiscovery"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/alias"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/alias"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/resources"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
+	"github.com/istio-ecosystem/mesh-operator/pkg/resources"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 
 	"k8s.io/client-go/tools/leaderelection"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/cluster"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common"
+	"github.com/istio-ecosystem/mesh-operator/pkg/cluster"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"k8s.io/client-go/dynamic"
 	corev1informers "k8s.io/client-go/informers/core/v1"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/k8swebhook"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/rollout"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/k8swebhook"
+	"github.com/istio-ecosystem/mesh-operator/pkg/rollout"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	meshhttp "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/http"
+	meshhttp "github.com/istio-ecosystem/mesh-operator/pkg/common/http"
 
 	istiov1alpha3 "istio.io/client-go/pkg/apis/networking/v1alpha3"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -58,7 +52,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/rest"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
 	"github.com/spf13/cobra"
 	"go.uber.org/zap/zapcore"
@@ -68,39 +62,25 @@ import (
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/cache"
 
-	meshv1alpha1 "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/controllers"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/logging"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	meshv1alpha1 "github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/controllers"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/logging"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 )
 
 const (
 	InformerRescanPeriodSeconds = 60 * 15 * time.Second
 	webhookConfigName           = "mesh-operator"
-	webhookName                 = "mesh-operator.sfdc.internal"
+	webhookName                 = "mesh-operator.mesh.io"
 	shutdownGracePeriod         = 15 * time.Second
-
-	fmtConfigMetricPrefix     = "fmt_"
-	DefaultFmtTimeout         = 180 * time.Second
-	DefaultInsecureSkipVerify = false
-	DefaultFmtCertRefresh     = 15 * time.Minute
 )
 
 var (
-	DefaultFmtEndpoint = JoinPath(features.FMTSEHost, features.FMTSEPath)
 	primaryClusterName = os.Getenv("CLUSTER_NAME")
 	scheme             = runtime.NewScheme()
 	metricsRegistry    = prometheus.NewRegistry()
 )
-
-func JoinPath(base, path string) string {
-	result, err := url.JoinPath(base, path)
-	if err != nil {
-		log.Fatalf("failed to join URL path %q with %q: %v", base, path, err)
-	}
-	return result
-}
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
@@ -159,12 +139,6 @@ func NewServerCommand(
 		electionOpts            LeaderElectionOptions
 		renderingConfigFile     string
 		controllerCfg           common.ControllerConfig
-		FmtCacheEnabled         bool
-		FmtRefreshDurationMs    int
-		FalconInstance          string
-		FunctionalDomain        string
-		FmtEndpoint             string
-		FmtBearerToken          string
 		tspCellTypeLabel        string
 		tspServiceInstanceLabel string
 		tspCellLabel            string
@@ -252,40 +226,6 @@ func NewServerCommand(
 			}
 
 			var leaderStartHook LeaderStartHook
-			var fmtCacheConfig falconmetadata.FalconServiceMetadataCache
-			var fmtEventsCh chan configprovider.ServiceAuthorizationEvent
-			if features.EnableFMTMetadataCache {
-				fmtCacheMetrics := monitoring.NewFalconMetadataConfigMetrics(fmtConfigMetricPrefix, metricsRegistry)
-				fmtCacheMetrics.RegisterMetrics()
-				fmtCacheMetrics.UpdateFalconMetadataConfigState(FmtCacheEnabled)
-
-				fmtClientConfig := fmtclient.FmtClientConfig{
-					// TODO: once we have a globally accessible endpoint, add a fallback endpoint here
-					FmtEndpoint:        DefaultFmtEndpoint,
-					Timeout:            DefaultFmtTimeout,
-					InsecureSkipVerify: DefaultInsecureSkipVerify,
-					CertRefresh:        DefaultFmtCertRefresh,
-					MetricsRegistry:    metricsRegistry,
-					Logger:             zaplogger,
-					OptionalAuthToken:  FmtBearerToken,
-				}
-
-				fmtCacheConfig, err = falconmetadata.NewFmtCache(&fmtClientConfig, FalconInstance, FunctionalDomain, FmtRefreshDurationMs, fmtCacheMetrics)
-				if err != nil {
-					logger.Fatal("failed to initialize fmt cache", "error", err)
-				}
-
-				var authEventPublisher configprovider.ServiceAuthorizationEventPublisher
-				if features.EnableSidecarConfig {
-					fmtEventsCh = make(chan configprovider.ServiceAuthorizationEvent, 100)
-					authEventPublisher = configprovider.NewServiceAuthorizationEventPublisher(logger, fmtEventsCh)
-				} else {
-					authEventPublisher = nil
-				}
-				fmtConfigProvider := configprovider.NewFalconConfigProvider(logger, fmtCacheConfig, fmtCacheMetrics, configprovider.ServiceAuthorizationEventHandler(logger, authEventPublisher))
-
-				leaderStartHook = buildFmtLeaderStartHook(logger, fmtCacheConfig, fmtConfigProvider)
-			}
 
 			// Multicluster service controller
 			serviceMulticlusterController := controllers.NewMulticlusterServiceController(
@@ -353,23 +293,11 @@ func NewServerCommand(
 				)
 			}
 
-			// Create ProxyAccessController (if SidecarConfig feature is enabled) before multicluster controller
-			// This allows ProxyAccessController to be passed to the multicluster controller for dynamic cluster registration
+			// SidecarConfig feature (proxy access control) is deferred: the upstream implementation
+			// depended on an external service metadata cache and is not part of the OSS bootstrap.
 			var proxyAccessController controllers_api.ProxyAccessController
 			if features.EnableSidecarConfig {
-				// Register SidecarConfig types in the runtime scheme so the event recorder
-				// can construct ObjectReferences for SidecarConfig resources (used by SidecarConfigController).
 				utilruntime.Must(meshv1alpha1.AddToScheme(scheme))
-
-				dynamicClient := primaryClusterKubeClient.Dynamic()
-				proxyAccessController = controllers.NewProxyAccess(
-					logger,
-					clusterStore,
-					fmtCacheConfig, // nil when FMT not initialized
-					dynamicClient,
-					fmtEventsCh, // nil when FMT not initialized (same as fmtCacheConfig)
-					metricsRegistry,
-				)
 			}
 
 			// multicluster controller
@@ -547,13 +475,7 @@ func NewServerCommand(
 	command.Flags().StringToStringVar(&labelAliases, "label-aliases", map[string]string{}, "supports aliasing in object labels")
 	command.Flags().StringToStringVar(&annotationAliases, "annotation-aliases", map[string]string{}, "supports aliasing in object annotations")
 
-	command.Flags().IntVar(&FmtRefreshDurationMs, "fmt-refresh-duration-ms", 600000, "fmt fetch delay")
-	command.Flags().StringVar(&FmtEndpoint, "fmt-endpoint", "http://fmtapi.service-mesh.svc.mesh.sfdc.net:443/graphql", "FMT endpoint via ServiceEntry")
-	command.Flags().StringVar(&FmtBearerToken, "fmt-bearer-token", "", "Optional FMT OAuth2 token for local development (falcon CLI tokens). Not required in production.")
-	command.Flags().StringVar(&FalconInstance, "falcon-instance", "", "FI where MOP is running")
-	command.Flags().StringVar(&FunctionalDomain, "functional-domain", "", "FD where MOP is running")
-
-	// TSP label configuration for route-to-target resolution (values hardcoded in helm chart)
+	// TSP label configuration for route-to-target resolution (values supplied via helm chart)
 	command.Flags().StringVar(&tspCellTypeLabel, "cell-type-label", "", "Service label key for cell type used in TSP route validation")
 	command.Flags().StringVar(&tspServiceInstanceLabel, "service-instance-label", "", "Service label key for service instance used in TSP route validation")
 	command.Flags().StringVar(&tspCellLabel, "cell-label", "", "Service label key for cell used in TSP route validation")
@@ -651,32 +573,6 @@ func createApplicator(logger *zap.SugaredLogger, primaryClient kube.Client, dryR
 	return templating.NewK8sApplicator(
 		logger,
 		primaryClient)
-}
-
-func buildFmtLeaderStartHook(logger *zap.SugaredLogger, fmtCache falconmetadata.FalconServiceMetadataCache, fmtConfigProvider configprovider.FalconConfigProvider) LeaderStartHook {
-	return func(ctx context.Context) error {
-		if err := fmtCache.Start(); err != nil {
-			logger.Errorf("failed to start fmt cache [%v]", err)
-			return err
-		}
-
-		if err := fmtConfigProvider.Start(ctx); err != nil {
-			logger.Errorf("failed to start fmt config provider [%v]", err)
-			return err
-		}
-
-		go func() {
-			<-ctx.Done()
-			if err := fmtConfigProvider.Stop(); err != nil {
-				logger.Errorf("Error while closing fmt config provider [%v]", err)
-			}
-			if err := fmtCache.Stop(); err != nil {
-				logger.Errorf("Error while closing fmt cache [%v]", err)
-			}
-		}()
-
-		return nil
-	}
 }
 
 func createClusterDiscoveryFactory(logger *zap.SugaredLogger, config *rest.Config, stopCh <-chan struct{}) (secretdiscovery.Discovery, error) {
@@ -801,7 +697,7 @@ func createServicePolicyConfig() map[string]controllers.AdditionalObject {
 	}
 
 	/*
-		When both k8s service name is same as falcon service name, we can re-use this.
+		When the k8s service name matches the logical service identity, this policy can be re-used.
 		if features.EnableTrafficShardingPolicy {
 			// NOTE: name/namespace lookup configured here relies on the fact that TSP.services field is constrained to one item and matches TSP name
 			// This will change once we better understand service targeting for TSPs.

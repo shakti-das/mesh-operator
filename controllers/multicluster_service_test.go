@@ -6,20 +6,20 @@ import (
 	"fmt"
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controllers_api"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controllers_api"
 
 	"k8s.io/client-go/informers"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	meshOpErrors "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/errors"
+	meshOpErrors "github.com/istio-ecosystem/mesh-operator/pkg/errors"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/multicluster"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/multicluster"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controller_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controller_test"
 
 	"k8s.io/client-go/tools/cache"
 
@@ -27,13 +27,13 @@ import (
 
 	"time"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/cluster"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/cluster"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
@@ -398,7 +398,7 @@ func TestMulticlusterServiceController_updateMopStatus_RemoteClusterApiDown(t *t
 
 func TestMulticlusterServiceController_updateCTPStatus(t *testing.T) {
 	cluster1Name := "primary"
-	testNamespace := "core-on-sam"
+	testNamespace := "example-coreapp"
 	testSvc := kube_test.NewServiceBuilder("ora2-casam-app", testNamespace).SetUID("some-uid").Build()
 
 	testCTP := &unstructured.Unstructured{
@@ -407,7 +407,7 @@ func TestMulticlusterServiceController_updateCTPStatus(t *testing.T) {
 			"kind":       "ClusterTrafficPolicy",
 			"metadata": map[string]string{
 				"name":      "ora2-casam-app",
-				"namespace": "core-on-sam",
+				"namespace": "example-coreapp",
 			},
 		},
 	}
@@ -415,7 +415,7 @@ func TestMulticlusterServiceController_updateCTPStatus(t *testing.T) {
 	ctpObj := v1alpha1.ClusterTrafficPolicy{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "ora2-casam-app",
-			Namespace: "core-on-sam",
+			Namespace: "example-coreapp",
 		},
 	}
 

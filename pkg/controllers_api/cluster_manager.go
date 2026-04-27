@@ -4,15 +4,15 @@ import (
 	"sync"
 	"time"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 
 	"k8s.io/client-go/tools/record"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/cluster"
+	"github.com/istio-ecosystem/mesh-operator/pkg/cluster"
 
 	"go.uber.org/zap"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 )
 
 type Cluster interface {

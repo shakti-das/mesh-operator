@@ -11,14 +11,14 @@ import (
 	v1 "k8s.io/api/admission/v1"
 	corev1 "k8s.io/api/core/v1"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/alias"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/alias"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/logging"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/logging"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )

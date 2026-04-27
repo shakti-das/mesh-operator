@@ -8,8 +8,8 @@ import (
 
 	"go.uber.org/zap"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/generated/clientset/versioned"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/generated/informers/externalversions"
+	"github.com/istio-ecosystem/mesh-operator/pkg/generated/clientset/versioned"
+	"github.com/istio-ecosystem/mesh-operator/pkg/generated/informers/externalversions"
 
 	istioclient "istio.io/client-go/pkg/clientset/versioned"
 	istioinformer "istio.io/client-go/pkg/informers/externalversions"

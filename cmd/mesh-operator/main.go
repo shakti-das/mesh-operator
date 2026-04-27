@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"os"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/cmd"
+	"github.com/istio-ecosystem/mesh-operator/pkg/cmd"
 )
 
 func main() {

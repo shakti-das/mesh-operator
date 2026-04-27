@@ -6,24 +6,24 @@ import (
 	"strconv"
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controllers_api"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controllers_api"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/resources_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/resources_test"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 
 	k8stesting "k8s.io/client-go/testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controller_test"
-	kubetest "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controller_test"
+	kubetest "github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating_test"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -34,8 +34,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap/zaptest"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
 )
 
 var (

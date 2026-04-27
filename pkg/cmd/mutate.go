@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/dynamicrouting"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common"
+	"github.com/istio-ecosystem/mesh-operator/pkg/dynamicrouting"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/secretdiscovery"
+	"github.com/istio-ecosystem/mesh-operator/pkg/secretdiscovery"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/alias"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/alias"
 
 	"github.com/spf13/cobra"
 	"go.uber.org/zap/zapcore"
@@ -18,9 +18,9 @@ import (
 	v1 "k8s.io/api/core/v1"
 	k8sfake "k8s.io/client-go/kubernetes/fake"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/logging"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/rollout"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/logging"
+	"github.com/istio-ecosystem/mesh-operator/pkg/rollout"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 )
 
 const (

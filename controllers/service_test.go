@@ -6,38 +6,38 @@ import (
 	"testing"
 	"time"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controllers_api"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controllers_api"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/reconcilemetadata"
+	"github.com/istio-ecosystem/mesh-operator/pkg/reconcilemetadata"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/cluster"
+	"github.com/istio-ecosystem/mesh-operator/pkg/cluster"
 
 	kubeinformers "k8s.io/client-go/informers"
 
 	"go.uber.org/zap"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 
-	mopv1alpha1 "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
+	mopv1alpha1 "github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	k8stesting "k8s.io/client-go/testing"
 
-	kubetest "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	kubetest "github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 
 	"k8s.io/apimachinery/pkg/types"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating_test"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/resources_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/resources_test"
 
 	"k8s.io/client-go/util/workqueue"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controller_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controller_test"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -45,9 +45,9 @@ import (
 
 	"k8s.io/client-go/tools/cache"
 
-	commonmetrics "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	meshOpErrors "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/errors"
+	commonmetrics "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	meshOpErrors "github.com/istio-ecosystem/mesh-operator/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap/zaptest"
 	corev1 "k8s.io/api/core/v1"

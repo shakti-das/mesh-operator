@@ -8,7 +8,7 @@ import (
 	"path"
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/logging"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/logging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"

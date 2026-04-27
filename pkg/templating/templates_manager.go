@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 
 	"github.com/fsnotify/fsnotify"
 
@@ -235,7 +235,7 @@ func (m *filesystemTemplatesManager) replaceTemplatesAndMetadata(newTemplates ma
 	m.logger.Debug("Replaced templates and metadata successfully")
 }
 
-// isMetadataFile returns true for any metadata file, whether flat (e.g. "core-on-sam_coreapp-argo-bg_metadata.yaml")
+// isMetadataFile returns true for any metadata file, whether flat (e.g. "example-coreapp_coreapp-argo-bg_metadata.yaml")
 // or directory-based (e.g. "namespace/app/metadata.yaml").
 func (m *filesystemTemplatesManager) isMetadataFile(f fs.FileInfo) bool {
 	return !f.IsDir() && strings.HasSuffix(f.Name(), MetadataFileName)

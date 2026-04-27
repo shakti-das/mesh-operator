@@ -3,9 +3,9 @@ package transition
 import (
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
@@ -44,7 +44,7 @@ func TestDeprecatedTemplates(t *testing.T) {
 		{
 			name:                              "Template type deprecated in copilot",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters/wasm"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters/wasm"},
 			templateType:                      DefaultDefault,
 			expectedIsDeprecated:              true,
 		},
@@ -58,8 +58,8 @@ func TestDeprecatedTemplates(t *testing.T) {
 		{
 			name:                              "Template owned by copilot",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters/wasm"},
-			templateType:                      "core-on-sam_coreapp",
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters/wasm"},
+			templateType:                      "example-coreapp_coreapp",
 			expectedIsDeprecated:              false,
 		},
 		{

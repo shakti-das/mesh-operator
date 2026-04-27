@@ -1,7 +1,7 @@
 package templating_test
 
 import (
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 

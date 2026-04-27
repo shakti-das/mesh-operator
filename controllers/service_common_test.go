@@ -16,15 +16,15 @@ import (
 	coretesting "k8s.io/client-go/testing"
 	"sigs.k8s.io/controller-runtime/pkg/controller/priorityqueue"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
-	metricstesting "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics/testing"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/ocm"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controllers_api"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/rollout"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
+	metricstesting "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics/testing"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/ocm"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controllers_api"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/rollout"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 )
 
 func TestGetEnabledServicesOnly(t *testing.T) {
@@ -463,7 +463,7 @@ func TestReMutateRolloutsWithTemplateMetadata(t *testing.T) {
 
 	metadataService := kube_test.NewServiceBuilder("test-object", "test-ns").
 		SetAnnotations(map[string]string{
-			string(constants.TemplateOverrideAnnotation): "core-on-sam/coreapp-argo-bg",
+			string(constants.TemplateOverrideAnnotation): "example-coreapp/coreapp-argo-bg",
 		}).Build()
 
 	noMetadataService := kube_test.NewServiceBuilder("test-object", "test-ns").
@@ -476,7 +476,7 @@ func TestReMutateRolloutsWithTemplateMetadata(t *testing.T) {
 	}).Build()
 
 	testMetadata := map[string]*templating.TemplateMetadata{
-		"core-on-sam_coreapp-argo-bg": {
+		"example-coreapp_coreapp-argo-bg": {
 			Rollout: &templating.RolloutMetadata{
 				MutationTemplate:   "coreappBlueGreen",
 				ReMutationTemplate: "coreappReMutateBlueGreen",

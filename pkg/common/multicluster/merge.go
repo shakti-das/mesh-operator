@@ -4,7 +4,7 @@ import (
 	"maps"
 	"slices"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 )
 

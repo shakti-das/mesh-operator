@@ -3,7 +3,7 @@ package cmd
 import (
 	"flag"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/version"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/version"
 	"github.com/spf13/cobra"
 )
 

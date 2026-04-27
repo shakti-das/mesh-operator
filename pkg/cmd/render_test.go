@@ -58,40 +58,40 @@ func TestRenderCommandFlow(t *testing.T) {
 		{
 			name:          "RenderSvcWithFormatPatcher",
 			expectedError: nil,
-			servicePath:   "projects/services/servicemesh/mesh-operator/pkg/testdata/service-files/service.yaml",
+			servicePath:   "../testdata/service-files/service.yaml",
 			patcher:       "true",
 		},
 		{
 			name:          "RenderSvcWithCTP",
 			expectedError: nil,
-			servicePath:   "projects/services/servicemesh/mesh-operator/pkg/testdata/service-files/service.yaml",
-			ctpPath:       "projects/services/servicemesh/mesh-operator/pkg/testdata/ctp-files/ctp.yaml",
+			servicePath:   "../testdata/service-files/service.yaml",
+			ctpPath:       "../testdata/ctp-files/ctp.yaml",
 			patcher:       "true",
 		},
 		{
 			name:             "RenderServiceEntryWithFormatPatcher",
 			expectedError:    nil,
-			serviceEntryPath: "projects/services/servicemesh/mesh-operator/pkg/testdata/service-entry-files/se.yaml",
+			serviceEntryPath: "../testdata/service-entry-files/se.yaml",
 			patcher:          "true",
 		},
 		{
 			name:          "RenderMopWithFormatPatcher",
 			expectedError: nil,
-			servicePath:   "projects/services/servicemesh/mesh-operator/pkg/testdata/service-files/service.yaml",
-			mopPath:       "projects/services/servicemesh/mesh-operator/pkg/testdata/mop-files/mop.yaml",
+			servicePath:   "../testdata/service-files/service.yaml",
+			mopPath:       "../testdata/mop-files/mop.yaml",
 			patcher:       "true",
 		},
 		{
 			name:          "RenderSvcWithConsolePatcher",
 			expectedError: nil,
-			servicePath:   "projects/services/servicemesh/mesh-operator/pkg/testdata/service-files/service.yaml",
+			servicePath:   "../testdata/service-files/service.yaml",
 			patcher:       "false",
 		},
 		{
 			name:          "RenderMopWithConsolePatcher",
 			expectedError: nil,
-			servicePath:   "projects/services/servicemesh/mesh-operator/pkg/testdata/service-files/service.yaml",
-			mopPath:       "projects/services/servicemesh/mesh-operator/pkg/testdata/mop-files/mop.yaml",
+			servicePath:   "../testdata/service-files/service.yaml",
+			mopPath:       "../testdata/mop-files/mop.yaml",
 			patcher:       "false",
 		},
 		{
@@ -173,7 +173,7 @@ func TestUnmarshalFailure(t *testing.T) {
 	if os.Getenv("FLAG") == "1" {
 		command := NewTemplateRendererCommand()
 		command.SetArgs([]string{
-			"--service-path=projects/services/servicemesh/mesh-operator/pkg/testdata/end-to-end-templates/default_default_destinationrule.jsonnet",
+			"--service-path=../testdata/end-to-end-templates/default_default_destinationrule.jsonnet",
 			"--template-paths=" + TemplatesLocation,
 			"--print-templates=" + "true"})
 		_ = command.Execute()
@@ -195,7 +195,7 @@ func TestIncorrectMopFilePath(t *testing.T) {
 		command.SetArgs([]string{
 			"--template-paths=" + TemplatesLocation,
 			"--meshoperator-path=/alpha/beta",
-			"--service-path=projects/services/servicemesh/mesh-operator/pkg/testdata/service-files/service.yaml"})
+			"--service-path=../testdata/service-files/service.yaml"})
 		_ = command.Execute()
 		return
 	}

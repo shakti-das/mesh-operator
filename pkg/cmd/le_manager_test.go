@@ -6,12 +6,12 @@ import (
 	"testing"
 	"time"
 
-	testing2 "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/common/pkg/metrics/testing"
+	testing2 "github.com/istio-ecosystem/mesh-operator/common/pkg/metrics/testing"
 
 	"k8s.io/client-go/tools/cache"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap/zaptest"

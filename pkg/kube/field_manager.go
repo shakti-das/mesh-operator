@@ -3,8 +3,8 @@ package kube
 import (
 	"fmt"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 

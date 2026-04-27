@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controllers_api"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controllers_api"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common"
 
 	"github.com/google/uuid"
 
@@ -19,34 +19,34 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/validation"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/patch"
+	"github.com/istio-ecosystem/mesh-operator/pkg/patch"
 
-	meshOpErrors "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/errors"
+	meshOpErrors "github.com/istio-ecosystem/mesh-operator/pkg/errors"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/resources"
+	"github.com/istio-ecosystem/mesh-operator/pkg/resources"
 
-	commonmetrics "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	commonmetrics "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/matching"
+	"github.com/istio-ecosystem/mesh-operator/pkg/matching"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/hash"
+	"github.com/istio-ecosystem/mesh-operator/pkg/hash"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/generated/clientset/versioned"
+	"github.com/istio-ecosystem/mesh-operator/pkg/generated/clientset/versioned"
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/generated/listers/mesh.io/v1alpha1"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/generated/listers/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 	"k8s.io/client-go/tools/record"
 
-	meshv1alpha1 "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
+	meshv1alpha1 "github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 	"go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

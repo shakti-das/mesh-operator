@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"strings"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 )
 
 func ReadHash(isConfigNamespace bool, mop *v1alpha1.MeshOperator, object *unstructured.Unstructured) string {

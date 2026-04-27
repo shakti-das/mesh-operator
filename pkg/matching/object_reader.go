@@ -8,8 +8,8 @@ import (
 
 	"go.uber.org/zap"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 
 	istioinformersv1alpha3 "istio.io/client-go/pkg/informers/externalversions/networking/v1alpha3"
 	corev1informers "k8s.io/client-go/informers/core/v1"
@@ -113,11 +113,7 @@ func (ser *apiServiceEntryReader) List(namespace string, selector labels.Selecto
 		return nil, err
 	}
 
-	result := make([]*istiov1alpha3.ServiceEntry, len(serviceEntriesList.Items))
-	for i := range serviceEntriesList.Items {
-		result[i] = &serviceEntriesList.Items[i]
-	}
-	return result, nil
+	return serviceEntriesList.Items, nil
 }
 
 // informerServiceReader - cached, uses informer to obtain Service objects

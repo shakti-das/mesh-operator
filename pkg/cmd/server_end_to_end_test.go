@@ -9,23 +9,23 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/secretdiscovery"
+	"github.com/istio-ecosystem/mesh-operator/pkg/secretdiscovery"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 
 	"github.com/spf13/cobra"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating_test"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	kubeutil "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	kubeutil "github.com/istio-ecosystem/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"go.uber.org/zap"
@@ -39,8 +39,8 @@ import (
 )
 
 const (
-	TemplatesLocation                    = "projects/services/servicemesh/mesh-operator/pkg/testdata/end-to-end-templates"
-	RenderingConfigFile                  = "projects/services/servicemesh/mesh-operator/pkg/testdata/additional-object/config.yaml"
+	TemplatesLocation                    = "../testdata/end-to-end-templates"
+	RenderingConfigFile                  = "../testdata/additional-object/config.yaml"
 	MopEnabledNamespaceName              = "mop-namespace"
 	MopEnabledNamespaceNameRemoteCluster = "mop-namespace-c2"
 	SecretWatchNamespace                 = "mesh-control-plane"

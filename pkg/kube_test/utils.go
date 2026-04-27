@@ -3,8 +3,8 @@
 package kube_test
 
 import (
-	commonconstants "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/common/pkg/k8s/constants"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	commonconstants "github.com/istio-ecosystem/mesh-operator/common/pkg/k8s/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 	networkingv1alpha3 "istio.io/api/networking/v1alpha3"
 	"istio.io/client-go/pkg/apis/networking/v1alpha3"
 	appsv1 "k8s.io/api/apps/v1"

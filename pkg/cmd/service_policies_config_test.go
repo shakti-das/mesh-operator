@@ -3,8 +3,8 @@ package cmd
 import (
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/controllers"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/controllers"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	commonmetrics "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
+	commonmetrics "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"
 	"k8s.io/client-go/tools/cache"

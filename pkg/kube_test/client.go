@@ -5,10 +5,10 @@ package kube_test
 import (
 	"fmt"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/generated/clientset/versioned"
-	meshfake "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/generated/clientset/versioned/fake"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/generated/informers/externalversions"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/generated/clientset/versioned"
+	meshfake "github.com/istio-ecosystem/mesh-operator/pkg/generated/clientset/versioned/fake"
+	"github.com/istio-ecosystem/mesh-operator/pkg/generated/informers/externalversions"
 	istiofake "istio.io/client-go/pkg/clientset/versioned/fake"
 	discoveryfake "k8s.io/client-go/discovery/fake"
 	dynamicfake "k8s.io/client-go/dynamic/fake"

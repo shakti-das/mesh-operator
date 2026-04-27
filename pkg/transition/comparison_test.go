@@ -6,19 +6,19 @@ import (
 	"strings"
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
 
-	metricstesting "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics/testing"
+	metricstesting "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics/testing"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -26,9 +26,9 @@ import (
 
 	"istio.io/api/networking/v1alpha3"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
-	commonmetrics "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
+	commonmetrics "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	istiov1alpha3 "istio.io/client-go/pkg/apis/networking/v1alpha3"
 	istiosecurityv1beta1 "istio.io/client-go/pkg/apis/security/v1beta1"
@@ -78,7 +78,7 @@ var (
 			Namespace:       objectNsName,
 			ResourceVersion: "1",
 			Annotations: map[string]string{
-				"routing.mesh.io/template": DefaultZkSfdcnet,
+				"routing.mesh.io/template": DefaultZkSet,
 			},
 		},
 		Spec: v1.ServiceSpec{
@@ -99,7 +99,7 @@ var (
 			Namespace:       objectNsName,
 			ResourceVersion: "1",
 			Annotations: map[string]string{
-				"routing.mesh.io/template": DefaultZkSfdcnet,
+				"routing.mesh.io/template": DefaultZkSet,
 			},
 			Labels: map[string]string{
 				"p_servicename": pServiceName,
@@ -123,7 +123,7 @@ var (
 			Namespace:       objectNsName,
 			ResourceVersion: "1",
 			Annotations: map[string]string{
-				"routing.mesh.io/template": DefaultRedisSfdcnet,
+				"routing.mesh.io/template": DefaultRedisSet,
 				RedisOpsTimeoutAnnotation:  "100ms",
 			},
 		},
@@ -151,8 +151,8 @@ var (
 		},
 	}
 
-	externalServiceEntry = createServiceEntry(objectNsName, objectName, nil, map[string]string{"mesh.sfdc.net/managed-by": "copilot", "p_servicename": pServiceNameLabel})
-	extSeWithWithFdLevel = createServiceEntry(objectNsName, objectName, map[string]string{ExternalServiceConfigAnnotation: "{ \"is_fd_level\" : \"true\"}"}, map[string]string{"mesh.sfdc.net/managed-by": "copilot", "p_servicename": pServiceNameLabel})
+	externalServiceEntry = createServiceEntry(objectNsName, objectName, nil, map[string]string{"mesh.io.example.com/managed-by": "copilot", "p_servicename": pServiceNameLabel})
+	extSeWithWithFdLevel = createServiceEntry(objectNsName, objectName, map[string]string{ExternalServiceConfigAnnotation: "{ \"is_fd_level\" : \"true\"}"}, map[string]string{"mesh.io.example.com/managed-by": "copilot", "p_servicename": pServiceNameLabel})
 
 	serviceObject, _                                  = kube.ObjectToUnstructured(serviceTypedObject)
 	externalSeObject, _                               = kube.ObjectToUnstructured(externalServiceEntry)
@@ -203,10 +203,10 @@ var (
 
 	mopVirtualServiceGrpc = createVirtualServiceWithDefaultSpec(objectName, 7443)
 
-	statefulServiceEntry = createServiceEntry(objectNsName, "test-sts-0", nil, map[string]string{"mesh.sfdc.net/managed-by": "copilot"})
+	statefulServiceEntry = createServiceEntry(objectNsName, "test-sts-0", nil, map[string]string{"mesh.io.example.com/managed-by": "copilot"})
 	statefulVs           = createVirtualServiceWithDefaultSpec("test-sts-0", 123)
 	statefulDr           = NewDestinationRuleBuilder("test-sts-0", objectNsName).
-				SetLabels(map[string]string{"mesh.sfdc.net/managed-by": "copilot"}).Build()
+				SetLabels(map[string]string{"mesh.io.example.com/managed-by": "copilot"}).Build()
 
 	defaultCopilotGeneratedObjects = []runtime.Object{
 		copilotMainVirtualService, copilotVirtualServiceGrpc, copilotVirtualServiceHttp, copilotDestinationRule,
@@ -255,7 +255,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            serviceObject,
 			templateType:                      DefaultDefault,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/default"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/default"},
 			copilotGeneratedObjects:           defaultCopilotGeneratedObjects,
 			mopGeneratedObjects:               convertToUnstructured(t, defaultMopGeneratedObjects...),
 			expectedConfig:                    convertToUnstructured(t, defaultMopGeneratedObjects...),
@@ -266,7 +266,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            serviceObject,
 			templateType:                      DefaultDefault,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/default"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/default"},
 			copilotGeneratedObjects:           defaultCopilotGeneratedObjects,
 			mopGeneratedObjects:               convertToUnstructured(t, copilotVirtualServiceGrpc, copilotDestinationRule),
 			expectedConfig:                    convertToUnstructured(t, copilotVirtualServiceGrpc, copilotDestinationRule),
@@ -278,7 +278,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            serviceObject,
 			templateType:                      DefaultDefault,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/default"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/default"},
 			copilotGeneratedObjects: []runtime.Object{
 				copilotDestinationRule,
 				copilotMainVirtualService,
@@ -295,7 +295,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            serviceObject,
 			templateType:                      DefaultDefault,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/default"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/default"},
 			copilotGeneratedObjects: []runtime.Object{
 				copilotMainVirtualService,
 			},
@@ -309,7 +309,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            serviceObject,
 			templateType:                      DefaultDefault,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/default"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/default"},
 			copilotGeneratedObjects:           defaultCopilotGeneratedObjects,
 			mopGeneratedObjects: convertToUnstructured(t,
 				copilotVirtualServiceGrpc,
@@ -332,7 +332,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            serviceObject,
 			templateType:                      DefaultDefault,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/default"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/default"},
 			copilotGeneratedObjects:           defaultCopilotGeneratedObjects,
 			mopGeneratedObjects: convertToUnstructured(t,
 				copilotVirtualServiceGrpc,
@@ -354,7 +354,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            serviceObject,
 			templateType:                      DefaultDefault,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/default"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/default"},
 			copilotGeneratedObjects:           defaultCopilotGeneratedObjects,
 			mopGeneratedObjects: convertToUnstructured(t,
 				copilotVirtualServiceGrpc,
@@ -369,7 +369,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            serviceObject,
 			templateType:                      DefaultDefault,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp"},
 			copilotGeneratedObjects:           []runtime.Object{},
 			mopGeneratedObjects:               convertToUnstructured(t, mopVirtualServiceGrpc),
 			transitionDisabled:                true,
@@ -383,7 +383,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            serviceObject,
 			templateType:                      DefaultDefault,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/default"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/default"},
 			copilotGeneratedObjects: []runtime.Object{
 				setLabels(
 					copilotMainVirtualService,
@@ -410,7 +410,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            serviceObject,
 			templateType:                      DefaultDefault,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/default"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/default"},
 			copilotGeneratedObjects: []runtime.Object{
 				setLabels(
 					createVirtualServiceWithDefaultSpec(objectName, 7443),
@@ -433,34 +433,34 @@ func TestMeshConfigComparer(t *testing.T) {
 			expectedConfig:  []*unstructured.Unstructured{},
 		},
 		{
-			name:                              "Test mesh.sfdc.net/* and routing.mesh.sfdc.net/* labels propagated",
+			name:                              "Test mesh.io.example.com/* and routing.mesh.io.example.com/* labels propagated",
 			object:                            serviceObject,
 			templateType:                      DefaultDefault,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/default"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/default"},
 			copilotGeneratedObjects: []runtime.Object{
 				setLabels(copilotMainVirtualService,
 					map[string]string{
-						"mesh.sfdc.net/managed-by":            "istio-copilot",
-						"mesh.sfdc.net/some-other-label":      "other-value",
-						"routing.mesh.sfdc.net/multi-cluster": "true",
+						"mesh.io.example.com/managed-by":            "istio-copilot",
+						"mesh.io.example.com/some-other-label":      "other-value",
+						"routing.mesh.io.example.com/multi-cluster": "true",
 					}),
 			},
 			mopGeneratedObjects: convertToUnstructured(t, setLabels(copilotMainVirtualService, map[string]string{})),
 			expectedSuccess:     true,
 			expectedConfig: convertToUnstructured(t, setLabels(copilotMainVirtualService,
 				map[string]string{
-					"mesh.sfdc.net/managed-by":            "istio-copilot",
-					"mesh.sfdc.net/some-other-label":      "other-value",
-					"routing.mesh.sfdc.net/multi-cluster": "true",
+					"mesh.io.example.com/managed-by":            "istio-copilot",
+					"mesh.io.example.com/some-other-label":      "other-value",
+					"routing.mesh.io.example.com/multi-cluster": "true",
 				})),
 		},
 		{
 			name:                              "Test stateful compare",
 			object:                            serviceObject,
-			templateType:                      DefaultStatefulSfdcnet,
+			templateType:                      DefaultStatefulSet,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/stateful-sfdcnet"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/stateful"},
 			metadata:                          map[string]string{"statefulSetReplicas": "1", "statefulSetReplicaName": "test-sts"},
 			copilotGeneratedObjects:           []runtime.Object{copilotMainVirtualService, statefulVs, statefulDr, statefulServiceEntry},
 			mopGeneratedObjects:               convertToUnstructured(t, copilotMainVirtualService, statefulVs, statefulDr, statefulServiceEntry),
@@ -470,9 +470,9 @@ func TestMeshConfigComparer(t *testing.T) {
 		{
 			name:                              "Test additionalObjects exclusion (Transition Success)",
 			object:                            serviceObjectWithThriftProtocol,
-			templateType:                      DefaultStatefulSfdcnet,
+			templateType:                      DefaultStatefulSet,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/stateful-sfdcnet"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/stateful"},
 			metadata:                          map[string]string{"statefulSetReplicas": "1", "statefulSetReplicaName": "test-sts"},
 			copilotGeneratedObjects:           []runtime.Object{copilotMainVirtualService, statefulVs, statefulDr, statefulServiceEntry},
 			mopGeneratedObjects:               convertToUnstructured(t, copilotMainVirtualService, statefulVs, statefulDr, statefulServiceEntry),
@@ -485,7 +485,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            serviceObject,
 			templateType:                      EmailinfraEaas,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "emailinfra/eaas"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "emailinfra/eaas"},
 			metadata:                          map[string]string{"statefulSetReplicas": "1", "statefulSetReplicaName": "test-sts"},
 			copilotGeneratedObjects:           []runtime.Object{copilotMainVirtualService, statefulVs, statefulDr, statefulServiceEntry},
 			mopGeneratedObjects:               convertToUnstructured(t, copilotMainVirtualService, statefulVs, statefulDr, statefulServiceEntry),
@@ -495,12 +495,12 @@ func TestMeshConfigComparer(t *testing.T) {
 		{
 			name:                              "Test non matching SE",
 			object:                            serviceObject,
-			templateType:                      DefaultStatefulSfdcnet,
+			templateType:                      DefaultStatefulSet,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/stateful-sfdcnet"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/stateful"},
 			metadata:                          map[string]string{"statefulSetReplicas": "1"},
 			copilotGeneratedObjects:           []runtime.Object{copilotMainVirtualService, statefulServiceEntry},
-			mopGeneratedObjects:               convertToUnstructured(t, copilotMainVirtualService, createServiceEntry(objectNsName, "other-se", nil, map[string]string{"mesh.sfdc.net/managed-by": "copilot"})),
+			mopGeneratedObjects:               convertToUnstructured(t, copilotMainVirtualService, createServiceEntry(objectNsName, "other-se", nil, map[string]string{"mesh.io.example.com/managed-by": "copilot"})),
 			expectedSuccess:                   false,
 			expectedConfig:                    convertToUnstructured(t, copilotMainVirtualService),
 		},
@@ -509,7 +509,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            externalSeObject,
 			templateType:                      DefaultExternalService,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/external-service"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/external-service"},
 			copilotGeneratedObjects:           []runtime.Object{copilotMainVirtualService, copilotDestinationRule, redisFilter, starttlsFilter},
 			mopGeneratedObjects:               convertToUnstructured(t, rootVirtualServiceWithoutHttpRouteName, copilotDestinationRule, redisFilter, starttlsFilter),
 			expectedSuccess:                   true,
@@ -520,7 +520,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            externalSeObject,
 			templateType:                      DefaultExternalService,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/external-service"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/external-service"},
 			copilotGeneratedObjects:           []runtime.Object{copilotMainVirtualService, copilotDestinationRule, maxConnectionFilterInMcpNs},
 			mopGeneratedObjects:               convertToUnstructured(t, rootVirtualServiceWithoutHttpRouteName, copilotDestinationRule, maxConnectionFilterInMcpNs),
 			expectedSuccess:                   true,
@@ -531,40 +531,40 @@ func TestMeshConfigComparer(t *testing.T) {
 			object:                            externalSeObjectWithFdLevel,
 			templateType:                      DefaultExternalService,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/external-service"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/external-service"},
 			copilotGeneratedObjects:           []runtime.Object{copilotMainVirtualService, copilotDestinationRule, redisFilterInMcpNs},
 			mopGeneratedObjects:               convertToUnstructured(t, rootVirtualServiceWithoutHttpRouteName, copilotDestinationRule, redisFilterInMcpNs),
 			expectedSuccess:                   true,
 			expectedConfig:                    convertToUnstructured(t, rootVirtualServiceWithoutHttpRouteName, copilotDestinationRule, redisFilterInMcpNs),
 		},
 		{
-			name:                              "Test default_zk-sfdcnet template - ZkFilter",
+			name:                              "Test default_zookeeper template - ZkFilter",
 			object:                            serviceObjectZK,
-			templateType:                      DefaultZkSfdcnet,
+			templateType:                      DefaultZkSet,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/zk-sfdcnet"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/zookeeper"},
 			copilotGeneratedObjects:           []runtime.Object{copilotMainVirtualService, copilotDestinationRule, zkFilter},
 			mopGeneratedObjects:               convertToUnstructured(t, copilotMainVirtualService, copilotDestinationRule, zkFilter),
 			expectedSuccess:                   true,
 			expectedConfig:                    convertToUnstructured(t, copilotMainVirtualService, copilotDestinationRule, zkFilter),
 		},
 		{
-			name:                              "Test default_zk-sfdcnet template - ZkFilter with p_servicename label",
+			name:                              "Test default_zookeeper template - ZkFilter with p_servicename label",
 			object:                            serviceObjectZKWithLabel,
-			templateType:                      DefaultZkSfdcnet,
+			templateType:                      DefaultZkSet,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/zk-sfdcnet"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/zookeeper"},
 			copilotGeneratedObjects:           []runtime.Object{copilotMainVirtualService, copilotDestinationRule, zkFilterWithPServiceName},
 			mopGeneratedObjects:               convertToUnstructured(t, copilotMainVirtualService, copilotDestinationRule, zkFilterWithPServiceName),
 			expectedSuccess:                   true,
 			expectedConfig:                    convertToUnstructured(t, copilotMainVirtualService, copilotDestinationRule, zkFilterWithPServiceName),
 		},
 		{
-			name:                              "Test default_redis-sfdcnet template - redis ops timeout filter",
+			name:                              "Test default_redis template - redis ops timeout filter",
 			object:                            serviceObjectRedisOpsTimeout,
-			templateType:                      DefaultRedisSfdcnet,
+			templateType:                      DefaultRedisSet,
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "default/redis-sfdcnet"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "default/redis"},
 			copilotGeneratedObjects:           []runtime.Object{copilotMainVirtualService, copilotDestinationRule, redisOpsTimeoutFilter},
 			mopGeneratedObjects:               convertToUnstructured(t, copilotMainVirtualService, copilotDestinationRule, redisOpsTimeoutFilter),
 			expectedSuccess:                   true,
@@ -641,7 +641,7 @@ func TestMeshConfigComparer(t *testing.T) {
 
 func TestAddonConfigComparer(t *testing.T) {
 
-	sqlServerServiceEntry.SetLabels(map[string]string{"mesh.sfdc.net/managed-by": "istio-copilot"})
+	sqlServerServiceEntry.SetLabels(map[string]string{"mesh.io.example.com/managed-by": "istio-copilot"})
 
 	nonMatchingThriftFilter := createEnvoyFilter(objectName+"-"+ThriftFilterSuffix, objectNsName)
 	nonMatchingThriftFilter.Spec.ConfigPatches = []*v1alpha3.EnvoyFilter_EnvoyConfigObjectPatch{
@@ -683,7 +683,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "Thrift: deprecated",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp"},
 			object:                            serviceObjectWithThriftProtocol,
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, thriftFilter)},
 			expectedAddonConfig:               []*unstructured.Unstructured{objectToUnstructured(t, thriftFilter)},
@@ -691,7 +691,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "Thrift: no copilot filter",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "protocol/filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "protocol/filters"},
 			object:                            serviceObjectWithThriftProtocol,
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, thriftFilter)},
 			expectedAddonConfig:               []*unstructured.Unstructured{},
@@ -702,7 +702,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "Thrift: no mop filter",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "protocol/filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "protocol/filters"},
 			object:                            serviceObjectWithThriftProtocol,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, thriftFilter)},
 			expectedAddonConfig:               []*unstructured.Unstructured{},
@@ -713,7 +713,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "Thrift: no filters found, but should",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "protocol/filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "protocol/filters"},
 			object:                            serviceObjectWithThriftProtocol,
 			objectsInCluster:                  []runtime.Object{},
 			expectedAddonConfig:               []*unstructured.Unstructured{},
@@ -724,7 +724,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "Thrift: filters don't match",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "protocol/filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "protocol/filters"},
 			object:                            serviceObjectWithThriftProtocol,
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, nonMatchingThriftFilter)},
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, thriftFilter)},
@@ -736,7 +736,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "Thrift: filters match",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "protocol/filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "protocol/filters"},
 			object:                            serviceObjectWithThriftProtocol,
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, thriftFilter)},
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, thriftFilter)},
@@ -748,7 +748,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "Thrift: unrelated filters preserved",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "protocol/filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "protocol/filters"},
 			object:                            serviceObjectWithThriftProtocol,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, thriftFilter)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, zkFilter)},
@@ -760,7 +760,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "GenericServiceFilter: ExtraConfig",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters"},
 			object:                            serviceObjectWithGenericServiceAuthorityFilter,
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, genericAuthorityFilter)},
 			expectedMetrics:                   []TransitionMetrics{MopTransitionExtraConfigs},
@@ -770,7 +770,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "GenericServiceFilter - svc contains thrift port along with service template annotation ",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters"},
 			object:                            svcObjectWithThriftPortAndServiceFilterAnnotation,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, thriftFilter)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, genericAuthorityFilter), objectToUnstructured(t, thriftFilter)},
@@ -782,7 +782,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "GenericServiceFilter: MissingConfig",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters", "protocol/filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters", "protocol/filters"},
 			object:                            svcObjectWithThriftPortAndServiceFilterAnnotation,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, genericAuthorityFilter)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, thriftFilter)},
@@ -794,7 +794,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "GenericServiceFilter: DifferentSpec",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters"},
 			object:                            svcObjectWithThriftPortAndServiceFilterAnnotation,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, nonMatchingGenericAuthorityFilter)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, genericAuthorityFilter)},
@@ -806,7 +806,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "GenericServiceFilter: TransitionSuccess",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters"},
 			object:                            serviceObjectWithGenericServiceAuthorityFilter,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, genericAuthorityFilter)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, genericAuthorityFilter)},
@@ -818,7 +818,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "GenericServiceFilter - Skip wasm takeover",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters"},
 			object:                            serviceObjectWithAuthorityAndWasmFilter,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, genericAuthorityFilter), objectToUnstructured(t, wasmFilter)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, genericAuthorityFilter)},
@@ -830,7 +830,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "GenericServiceFilter - sql-server Transition Success",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters"},
 			object:                            serviceObjectWithGenericServiceSqlServerFilter,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, sqlServerServiceEntry)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, sqlServerServiceEntry)},
@@ -842,7 +842,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "GenericServiceFilter - Special case of sql-server resource, Extra config",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters"},
 			object:                            serviceObjectWithGenericServiceSqlServerFilter,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, sqlServerSeWithoutRoutingEnabledAnnotation)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, sqlServerServiceEntry)},
@@ -853,7 +853,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "GenericServiceFilter - jwt Filter, Transition Success",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters"},
 			object:                            serviceObjectWithGenericJwtFilter,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, genericJwtFilter)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, genericJwtFilter)},
@@ -865,7 +865,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "GenericServiceFilter - ratelimit filter, Transition Success",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters"},
 			object:                            serviceObjectWithGenericRateLimitFilter,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, genericRateLimitFilter)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, genericRateLimitFilter)},
@@ -877,7 +877,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "GenericServiceFilter - passthrough filter, Transition Success",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "generic/service-filters"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "generic/service-filters"},
 			object:                            serviceObjectWithGenericPassthroughFilter,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, genericPassthroughFilter)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, genericPassthroughFilter)},
@@ -889,7 +889,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "RateLimitingServiceFilter - unified-engagement fdType, Transition Success",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "unified-engagement/rate-limiting-service"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "unified-engagement/rate-limiting-service"},
 			object:                            serviceObjectWithCell,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, rateLimitingFilter)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, rateLimitingFilter)},
@@ -902,7 +902,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "RateLimitingServiceFilter: MissingConfig",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "unified-engagement/rate-limiting-service"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "unified-engagement/rate-limiting-service"},
 			object:                            serviceObjectWithCell,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, rateLimitingFilter)},
 			mopAddon:                          []*unstructured.Unstructured{},
@@ -915,7 +915,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "RateLimitingServiceFilter: DifferentSpec",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "unified-engagement/rate-limiting-service"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "unified-engagement/rate-limiting-service"},
 			object:                            serviceObjectWithCell,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, nonMatchingRLSFilter)},
 			mopAddon:                          []*unstructured.Unstructured{objectToUnstructured(t, rateLimitingFilter)},
@@ -928,7 +928,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "RatelimitingServiceFilter: Excluded namespace",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "unified-engagement/rate-limiting-service"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "unified-engagement/rate-limiting-service"},
 			object:                            rlsExcludedObjectWithCell,
 			objectsInCluster:                  []runtime.Object{},
 			mopAddon:                          []*unstructured.Unstructured{},
@@ -940,7 +940,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "RatelimitingServiceFilter: No p_cell",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "unified-engagement/rate-limiting-service"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "unified-engagement/rate-limiting-service"},
 			object:                            serviceObject,
 			objectsInCluster:                  []runtime.Object{objectToUnstructured(t, rateLimitingFilter)},
 			mopAddon:                          []*unstructured.Unstructured{},
@@ -952,7 +952,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "RatelimitingServiceFilter: LB type",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "unified-engagement/rate-limiting-service"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "unified-engagement/rate-limiting-service"},
 			object:                            lbTypeService,
 			objectsInCluster:                  []runtime.Object{},
 			mopAddon:                          []*unstructured.Unstructured{},
@@ -964,7 +964,7 @@ func TestAddonConfigComparer(t *testing.T) {
 		{
 			name:                              "RatelimitingServiceFilter: external name IP",
 			enableCopilotToMopTransition:      true,
-			transitionTemplatesOwnedByCopilot: []string{"core-on-sam/coreapp", "unified-engagement/rate-limiting-service"},
+			transitionTemplatesOwnedByCopilot: []string{"example-coreapp/coreapp", "unified-engagement/rate-limiting-service"},
 			object:                            ipExternalService,
 			objectsInCluster:                  []runtime.Object{},
 			mopAddon:                          []*unstructured.Unstructured{},
@@ -1197,7 +1197,7 @@ func buildVirtualService(name string, spec v1alpha3.VirtualService) *istiov1alph
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        name,
 			Namespace:   objectNsName,
-			Labels:      map[string]string{"mesh.sfdc.net/managed-by": "copilot"},
+			Labels:      map[string]string{"mesh.io.example.com/managed-by": "copilot"},
 			Annotations: map[string]string{},
 		},
 		Spec: spec,
@@ -1371,7 +1371,7 @@ func createEnvoyFilter(name string, namespace string) *istiov1alpha3.EnvoyFilter
 			Name:      name,
 		},
 	}
-	filter.SetLabels(map[string]string{"mesh.sfdc.net/managed-by": "copilot"})
+	filter.SetLabels(map[string]string{"mesh.io.example.com/managed-by": "copilot"})
 	return &filter
 }
 
@@ -1386,6 +1386,6 @@ func createRequestAuthenticationResource(name string, namespace string) *istiose
 			Name:      name,
 		},
 	}
-	requestAuthentication.SetLabels(map[string]string{"mesh.sfdc.net/managed-by": "copilot"})
+	requestAuthentication.SetLabels(map[string]string{"mesh.io.example.com/managed-by": "copilot"})
 	return &requestAuthentication
 }

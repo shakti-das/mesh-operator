@@ -7,32 +7,32 @@ import (
 	"strings"
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/deployment"
+	"github.com/istio-ecosystem/mesh-operator/pkg/deployment"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/rollout"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/statefulset"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/rollout"
+	"github.com/istio-ecosystem/mesh-operator/pkg/statefulset"
 	"k8s.io/client-go/tools/cache"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/reconcilemetadata"
+	"github.com/istio-ecosystem/mesh-operator/pkg/reconcilemetadata"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/transition"
+	"github.com/istio-ecosystem/mesh-operator/pkg/transition"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
-	metricstesting "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics/testing"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
+	metricstesting "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics/testing"
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"

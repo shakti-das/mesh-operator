@@ -11,15 +11,15 @@ import (
 	"golang.org/x/sync/errgroup"
 	"k8s.io/client-go/tools/cache"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"go.uber.org/zap/zaptest"
 	"k8s.io/client-go/tools/record"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/cluster"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/cluster"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 )
 
 // MockCluster is a mock implementation of the Cluster interface for testing

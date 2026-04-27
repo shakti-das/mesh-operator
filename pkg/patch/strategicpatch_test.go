@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	error2 "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/errors"
+	error2 "github.com/istio-ecosystem/mesh-operator/pkg/errors"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/joeyb/goldenfiles"
@@ -19,7 +19,7 @@ import (
 )
 
 func TestPatchVirtualServiceBasics(t *testing.T) {
-	testFilesDir := "projects/services/servicemesh/mesh-operator/pkg/testdata/TestPatchVirtualService/"
+	testFilesDir := "../testdata/TestPatchVirtualService/"
 	workspacePath := os.Getenv("WORKSPACE_PATH") // required for bazel to write goldfiles back to source
 	goldenfiles.GoldenFilePath = workspacePath + testFilesDir
 
@@ -110,7 +110,7 @@ func TestPatchVirtualServiceBasics(t *testing.T) {
 }
 
 func TestPatchVirtualServiceSuccess(t *testing.T) {
-	testFilesDir := "projects/services/servicemesh/mesh-operator/pkg/testdata/TestPatchVirtualService/"
+	testFilesDir := "../testdata/TestPatchVirtualService/"
 	workspacePath := os.Getenv("WORKSPACE_PATH") // required for bazel to write goldfiles back to source
 	goldenfiles.GoldenFilePath = workspacePath + testFilesDir
 
@@ -180,7 +180,7 @@ func TestPatchVirtualServiceSuccess(t *testing.T) {
 }
 
 func TestPatchVirtualServiceFailure(t *testing.T) {
-	testFilesDir := "projects/services/servicemesh/mesh-operator/pkg/testdata/TestPatchVirtualService/"
+	testFilesDir := "../testdata/TestPatchVirtualService/"
 	workspacePath := os.Getenv("WORKSPACE_PATH") // required for bazel to write goldfiles back to source
 	goldenfiles.GoldenFilePath = workspacePath + testFilesDir
 
@@ -272,7 +272,7 @@ func TestPatchVirtualServiceFailure(t *testing.T) {
 }
 
 func TestPatchDestinationRule(t *testing.T) {
-	testFilesDir := "projects/services/servicemesh/mesh-operator/pkg/testdata/TestPatchDestinationRule/"
+	testFilesDir := "../testdata/TestPatchDestinationRule/"
 	workspacePath := os.Getenv("WORKSPACE_PATH") // required for bazel to write goldfiles back to source
 	goldenfiles.GoldenFilePath = workspacePath + testFilesDir
 
@@ -330,7 +330,7 @@ func TestPatchDestinationRule(t *testing.T) {
 }
 
 func TestValidateVirtualServiceOverlay(t *testing.T) {
-	testFilesDir := "projects/services/servicemesh/mesh-operator/pkg/testdata/TestValidateVirtualServiceOverlay/"
+	testFilesDir := "../testdata/TestValidateVirtualServiceOverlay/"
 
 	testCases := []struct {
 		name          string
@@ -441,7 +441,7 @@ func TestValidateVirtualServiceOverlay(t *testing.T) {
 }
 
 func TestValidateDestinationRuleOverlay(t *testing.T) {
-	testFilesDir := "projects/services/servicemesh/mesh-operator/pkg/testdata/TestValidateDestinationRuleOverlay/"
+	testFilesDir := "../testdata/TestValidateDestinationRuleOverlay/"
 
 	testCases := []struct {
 		name          string

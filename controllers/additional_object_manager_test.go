@@ -4,24 +4,24 @@ import (
 	"context"
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controllers_api"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controllers_api"
 
-	constants2 "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/common/pkg/k8s/constants"
+	constants2 "github.com/istio-ecosystem/mesh-operator/common/pkg/k8s/constants"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/cluster"
+	"github.com/istio-ecosystem/mesh-operator/pkg/cluster"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 	kubeinformers "k8s.io/client-go/informers"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/cache"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap/zaptest"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -59,14 +59,14 @@ func TestCreateInformersForAddObjs(t *testing.T) {
 				Group:     "mesh.io",
 				Version:   "v1alpha1",
 				Resource:  "clustertrafficpolicies",
-				Namespace: "core-on-sam",
+				Namespace: "example-coreapp",
 				Lookup:    Lookup{BySvcNameAndNamespace: true},
 			},
 			"trafficShardingPolicy": {
 				Group:     "mesh.io",
 				Version:   "v1alpha1",
 				Resource:  "trafficshardingpolicies",
-				Namespace: "core-on-sam",
+				Namespace: "example-coreapp",
 				Lookup:    Lookup{BySvcNameAndNamespaceArray: []string{"spec", "services"}},
 			},
 		},
@@ -75,7 +75,7 @@ func TestCreateInformersForAddObjs(t *testing.T) {
 	testCTP := &v1alpha1.ClusterTrafficPolicy{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "ora2-casam-app",
-			Namespace: "core-on-sam",
+			Namespace: "example-coreapp",
 		},
 	}
 	client := kube_test.NewKubeClientBuilder().
@@ -170,13 +170,13 @@ func TestCreateInformersForAddObjs(t *testing.T) {
 			"kind":       "TrafficShardingPolicy",
 			"metadata": map[string]interface{}{
 				"name":      "ora2-casam-app",
-				"namespace": "core-on-sam",
+				"namespace": "example-coreapp",
 			},
 		},
 	}
 	err = tspInformer.Informer().GetIndexer().Add(mockTsp)
 	assert.NoError(t, err)
-	tspInCluster, err := tspInformer.Informer().GetIndexer().ByIndex("spec/services", "core-on-sam/ora2-casam-app")
+	tspInCluster, err := tspInformer.Informer().GetIndexer().ByIndex("spec/services", "example-coreapp/ora2-casam-app")
 	assert.NotNil(t, tspInCluster)
 }
 
@@ -889,7 +889,7 @@ func TestGetCtpObjectsForService(t *testing.T) {
 			Group:     "mesh.io",
 			Version:   "v1alpha1",
 			Resource:  "clustertrafficpolicies",
-			Namespace: "core-on-sam",
+			Namespace: "example-coreapp",
 			Lookup:    Lookup{BySvcNameAndNamespace: true},
 		},
 	}
@@ -900,7 +900,7 @@ func TestGetCtpObjectsForService(t *testing.T) {
 			"kind":       "ClusterTrafficPolicy",
 			"metadata": map[string]interface{}{
 				"name":      "ora2-casam-app",
-				"namespace": "core-on-sam",
+				"namespace": "example-coreapp",
 			},
 		},
 	}
@@ -926,11 +926,11 @@ func TestGetCtpObjectsForService(t *testing.T) {
 			"kind":       "ClusterTrafficPolicy",
 			"metadata": map[string]interface{}{
 				"name":      "other-name",
-				"namespace": "core-on-sam",
+				"namespace": "example-coreapp",
 			},
 		},
 	}
-	testSvc := kube_test.CreateServiceWithLabels("core-on-sam", "ora2-casam-app", map[string]string{})
+	testSvc := kube_test.CreateServiceWithLabels("example-coreapp", "ora2-casam-app", map[string]string{})
 
 	testCases := []struct {
 		name                       string
@@ -949,21 +949,21 @@ func TestGetCtpObjectsForService(t *testing.T) {
 			name:                     "No_AdditionalObjectsFound_ForSvc",
 			svc:                      testSvc,
 			expectedAdditionalObject: nil,
-			expectedError:            "additional object: core-on-sam/ora2-casam-app is missing",
+			expectedError:            "additional object: example-coreapp/ora2-casam-app is missing",
 		},
 		{
 			name:                       "Additional object exists in different namespace",
 			svc:                        testSvc,
 			additionalObjectsInCluster: []runtime.Object{differentNsCTPObj},
 			expectedAdditionalObject:   nil,
-			expectedError:              "additional object: core-on-sam/ora2-casam-app is missing",
+			expectedError:              "additional object: example-coreapp/ora2-casam-app is missing",
 		},
 		{
 			name:                       "Additional object exists in the namespace, no matching name",
 			svc:                        testSvc,
 			additionalObjectsInCluster: []runtime.Object{differentNameCTPObj},
 			expectedAdditionalObject:   nil,
-			expectedError:              "additional object: core-on-sam/ora2-casam-app is missing",
+			expectedError:              "additional object: example-coreapp/ora2-casam-app is missing",
 		},
 	}
 
@@ -1029,13 +1029,13 @@ func TestGetTspObjectForService(t *testing.T) {
 			"kind":       "TrafficShardingPolicy",
 			"metadata": map[string]interface{}{
 				"name":      "test-tsp",
-				"namespace": "core-on-sam",
+				"namespace": "example-coreapp",
 			},
 			"spec": map[string]interface{}{
 				"services": []interface{}{
 					map[string]interface{}{
 						"name":      "ora2-casam-app",
-						"namespace": "core-on-sam",
+						"namespace": "example-coreapp",
 					},
 				},
 			},
@@ -1058,7 +1058,7 @@ func TestGetTspObjectForService(t *testing.T) {
 				"services": []interface{}{
 					map[string]interface{}{
 						"name":      "ora2-casam-app",
-						"namespace": "core-on-sam",
+						"namespace": "example-coreapp",
 					},
 				},
 			},
@@ -1071,20 +1071,20 @@ func TestGetTspObjectForService(t *testing.T) {
 			"kind":       "ClusterTrafficPolicy",
 			"metadata": map[string]interface{}{
 				"name":      "non-matching-tsp",
-				"namespace": "core-on-sam",
+				"namespace": "example-coreapp",
 			},
 			"spec": map[string]interface{}{
 				"services": []interface{}{
 					map[string]interface{}{
 						"name":      "ora2-casam-app-nonmatch",
-						"namespace": "core-on-sam",
+						"namespace": "example-coreapp",
 					},
 				},
 			},
 		},
 	}
 
-	testSvc := kube_test.CreateServiceWithLabels("core-on-sam", "ora2-casam-app", map[string]string{})
+	testSvc := kube_test.CreateServiceWithLabels("example-coreapp", "ora2-casam-app", map[string]string{})
 
 	testCases := []struct {
 		name                       string
@@ -1103,21 +1103,21 @@ func TestGetTspObjectForService(t *testing.T) {
 			name:                     "No_AdditionalObjectsFound_ForSvc",
 			svc:                      testSvc,
 			expectedAdditionalObject: nil,
-			expectedError:            "additional object: core-on-sam/ora2-casam-app is missing",
+			expectedError:            "additional object: example-coreapp/ora2-casam-app is missing",
 		},
 		{
 			name:                       "Additional object exists in different namespace",
 			svc:                        testSvc,
 			additionalObjectsInCluster: []runtime.Object{differentNsTspObj},
 			expectedAdditionalObject:   nil,
-			expectedError:              "additional object: core-on-sam/ora2-casam-app is missing",
+			expectedError:              "additional object: example-coreapp/ora2-casam-app is missing",
 		},
 		{
 			name:                       "Additional object exists in the namespace, no matching name",
 			svc:                        testSvc,
 			additionalObjectsInCluster: []runtime.Object{nonMatchTspObj},
 			expectedAdditionalObject:   nil,
-			expectedError:              "additional object: core-on-sam/ora2-casam-app is missing",
+			expectedError:              "additional object: example-coreapp/ora2-casam-app is missing",
 		},
 	}
 
@@ -1359,7 +1359,7 @@ func TestEnqueueMop_OnAdditionalObjectUpdate(t *testing.T) {
 
 			addObj := &unstructured.Unstructured{
 				Object: map[string]interface{}{
-					"apiVersion": "ingress.mesh.sfdc.net/v2",
+					"apiVersion": "ingress.mesh.io.example.com/v2",
 					"kind":       "IngressGatewayConfig",
 					"metadata": map[string]interface{}{
 						"name":      "whatever",

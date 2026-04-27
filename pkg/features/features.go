@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 )
 
 var (
@@ -73,10 +73,7 @@ var (
 	QueueWatchdogThresholdMinutes              = getIntEnvValueOrDefault("QUEUE_WATCHDOG_THRESHOLD_MINUTES", 15)
 	QueueWatchdogWarningPercentage             = getIntEnvValueOrDefault("QUEUE_WATCHDOG_WARNING_PERCENTAGE", 70)
 	EnableTemplateMetadata                     = getBooleanEnvValue("ENABLE_TEMPLATE_METADATA", false)
-	EnableFMTMetadataCache                     = getBooleanEnvValue("ENABLE_FMT_METADATA_CACHE", false)
 	PlainTextMutatingWebhook                   = getBooleanEnvValue("PLAIN_TEXT_WEBHOOK", false)
-	FMTSEHost                                  = getStringEnvValueOrDefault("FMT_SE_HOST", constants.DefaultFMTSEHost)
-	FMTSEPath                                  = getStringEnvValueOrDefault("FMT_SE_PATH", constants.DefaultFMTSEPath)
 )
 
 // SidecarConfigAllNamespacesWildcard: when present in ENABLE_SIDECAR_CONFIG_NAMESPACES or ENABLE_SHADOW_SIDECAR_CONFIG_NAMESPACES, all namespaces are allowed.

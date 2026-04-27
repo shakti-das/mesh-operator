@@ -9,11 +9,11 @@ import (
 	"strings"
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/secretdiscovery"
+	"github.com/istio-ecosystem/mesh-operator/pkg/secretdiscovery"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 
-	meshhttp "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/http"
+	meshhttp "github.com/istio-ecosystem/mesh-operator/pkg/common/http"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/segmentio/ksuid"

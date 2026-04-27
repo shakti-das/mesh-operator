@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 	"github.com/joeyb/goldenfiles"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -16,7 +16,7 @@ import (
 )
 
 func TestMatchByUri(t *testing.T) {
-	testFilesDir := "projects/services/servicemesh/mesh-operator/pkg/testdata/TestPatchVirtualService/use-cases/"
+	testFilesDir := "../testdata/TestPatchVirtualService/use-cases/"
 	workspacePath := os.Getenv("WORKSPACE_PATH") // required for bazel to write goldfiles back to source
 
 	useCaseName := "match-by-uri"
@@ -79,7 +79,7 @@ func TestMatchByUri(t *testing.T) {
 }
 
 func TestMatchByUriAndPort(t *testing.T) {
-	testFilesDir := "projects/services/servicemesh/mesh-operator/pkg/testdata/TestPatchVirtualService/use-cases/"
+	testFilesDir := "../testdata/TestPatchVirtualService/use-cases/"
 	workspacePath := os.Getenv("WORKSPACE_PATH") // required for bazel to write goldfiles back to source
 
 	useCaseName := "match-by-uri-and-port"

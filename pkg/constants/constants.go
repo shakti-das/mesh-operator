@@ -22,7 +22,7 @@ const (
 
 const (
 	ControlPlaneNamespace  = "mesh-control-plane"
-	GatewayNamespace       = "sfproxy" // gateway namespace; sidecar config rendering is skipped here
+	GatewayNamespace       = "istio-ingress" // gateway namespace; sidecar config rendering is skipped here
 	DefaultConfigNamespace = "istio-system"
 
 	MeshOperatorName = "mesh-operator"
@@ -107,7 +107,7 @@ const (
 	NotAvailable = "NA"
 
 	// DefaultFmtSEHost is the default FMT SE host
-	DefaultFMTSEHost = "http://fmtapi.service-mesh.svc.mesh.sfdc.net:443"
+	DefaultFMTSEHost = "http://svc-metadata.example.com:443"
 	DefaultFMTSEPath = "/graphql"
 )
 

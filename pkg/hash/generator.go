@@ -8,11 +8,11 @@ import (
 
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
 	"go.uber.org/zap"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 	"k8s.io/apimachinery/pkg/util/rand"
 )
 

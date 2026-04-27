@@ -14,11 +14,11 @@ import (
 	dynamicfake "k8s.io/client-go/dynamic/fake"
 	"k8s.io/client-go/tools/cache"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 )
 
 var templateOverrideAnnotation = common.GetStringForAttribute(constants.TemplateOverrideAnnotation)
@@ -137,7 +137,7 @@ func TestGetReMutationTemplate(t *testing.T) {
 	canaryService := kube_test.NewServiceBuilder("test-svc", "ns").
 		SetAnnotations(map[string]string{templateOverrideAnnotation: "default/canary-stateless"}).Build()
 	coreappService := kube_test.NewServiceBuilder("test-svc", "ns").
-		SetAnnotations(map[string]string{templateOverrideAnnotation: "core-on-sam/coreapp-argo-bg"}).Build()
+		SetAnnotations(map[string]string{templateOverrideAnnotation: "example-coreapp/coreapp-argo-bg"}).Build()
 	unknownService := kube_test.NewServiceBuilder("test-svc", "ns").
 		SetAnnotations(map[string]string{templateOverrideAnnotation: "unknown/template"}).Build()
 
@@ -167,7 +167,7 @@ func TestGetReMutationTemplate(t *testing.T) {
 			name:    "templateMetadata enabled - has reMutationTemplate",
 			service: &coreappService,
 			metadata: map[string]*templating.TemplateMetadata{
-				"core-on-sam_coreapp-argo-bg": {
+				"example-coreapp_coreapp-argo-bg": {
 					Rollout: &templating.RolloutMetadata{
 						MutationTemplate:   "coreappBlueGreen",
 						ReMutationTemplate: "coreappReMutate",
@@ -210,7 +210,7 @@ func TestGetMutationTemplate(t *testing.T) {
 	canaryService := kube_test.NewServiceBuilder("test-svc", "ns").
 		SetAnnotations(map[string]string{templateOverrideAnnotation: "default/canary-stateless"}).Build()
 	coreappService := kube_test.NewServiceBuilder("test-svc", "ns").
-		SetAnnotations(map[string]string{templateOverrideAnnotation: "core-on-sam/coreapp-argo-bg"}).Build()
+		SetAnnotations(map[string]string{templateOverrideAnnotation: "example-coreapp/coreapp-argo-bg"}).Build()
 	unknownService := kube_test.NewServiceBuilder("test-svc", "ns").
 		SetAnnotations(map[string]string{templateOverrideAnnotation: "unknown/template"}).Build()
 
@@ -240,7 +240,7 @@ func TestGetMutationTemplate(t *testing.T) {
 			name:    "templateMetadata enabled - has mutationTemplate",
 			service: &coreappService,
 			metadata: map[string]*templating.TemplateMetadata{
-				"core-on-sam_coreapp-argo-bg": {
+				"example-coreapp_coreapp-argo-bg": {
 					Rollout: &templating.RolloutMetadata{
 						MutationTemplate:   "coreappBlueGreen",
 						ReMutationTemplate: "coreappReMutate",

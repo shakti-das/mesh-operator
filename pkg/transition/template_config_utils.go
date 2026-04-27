@@ -6,9 +6,9 @@ import (
 	"sort"
 	"strings"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
@@ -16,19 +16,19 @@ import (
 const (
 	DefaultDefault = "default_default"
 
-	DefaultStatefulSfdcnet = "default_stateful-sfdcnet"
+	DefaultStatefulSet = "default_stateful"
 	EmailinfraEaas         = "emailinfra_eaas"
 	SolrService            = "solr-service_solr-service"
 	Vagabond               = "vagabond_vagabond"
 
-	DefaultRedisSfdcnet    = "default_redis-sfdcnet"
+	DefaultRedisSet    = "default_redis"
 	Caas                   = "cache-as-a-service_caas"
 	CaasPc                 = "cache-as-a-service_caaspc"
 	DefaultExternalService = "default_external-service"
-	DefaultZkSfdcnet       = "default_zk-sfdcnet"
+	DefaultZkSet       = "default_zookeeper"
 
-	CoreOnSamCoreapp = "core-on-sam_coreapp"
-	CoreOnSamDapp    = "core-on-sam_dapp"
+	CoreOnSamCoreapp = "example-coreapp_coreapp"
+	CoreOnSamDapp    = "example-coreapp_dapp"
 	HsrCoreHsr       = "hsr_core-hsr"
 
 	GenericServiceFilters      = "generic_service-filters"
@@ -69,24 +69,24 @@ const (
 
 // Annotations
 const (
-	ExternalServiceConfigAnnotation = "routing.mesh.sfdc.net/external-service"
-	RedisOpsTimeoutAnnotation       = "routing.mesh.sfdc.net/redis-ops-timeout"
-	RedisOpsTimeoutFilterNamespace  = "core-on-sam"
-	SfproxyNamespace                = "sfproxy"
+	ExternalServiceConfigAnnotation = "routing.mesh.io.example.com/external-service"
+	RedisOpsTimeoutAnnotation       = "routing.mesh.io.example.com/redis-ops-timeout"
+	RedisOpsTimeoutFilterNamespace  = "example-coreapp"
+	SfproxyNamespace                = "istio-ingress"
 	isFdLevel                       = "is_fd_level"
 	UnifiedEngagementFd             = "unified-engagement"
-	ServiceTemplateAnnotation       = "routing.mesh.sfdc.net/service-templates"
-	ManagedByCopilotLabel           = "mesh.sfdc.net/managed-by"
-	TypeLabel                       = "mesh.sfdc.net/type"
-	VersionLabel                    = "mesh.sfdc.net/version"
+	ServiceTemplateAnnotation       = "routing.mesh.io.example.com/service-templates"
+	ManagedByCopilotLabel           = "mesh.io.example.com/managed-by"
+	TypeLabel                       = "mesh.io.example.com/type"
+	VersionLabel                    = "mesh.io.example.com/version"
 )
 
 var (
 	RlsExcludedNamespaces = []string{
-		"mesh-control-plane", "service-mesh", "sfproxy",
+		"mesh-control-plane", "service-mesh", "istio-ingress",
 		"authz-opa-webhook", "collection-webhook", "collection-webhook-test", "cts", "discovery", "dnr-collect",
 		"dva-system", "iac", "kaas", "kaas-webhook", "kube-node-lease", "kube-public", "kube-system", "madkub-injector-watchdog",
-		"madkub-webhook", "opa", "sam-system", "sfdc-system", "stampy-webhook", "stride-eks-components", "system", "vault-injection",
+		"madkub-webhook", "opa", "example-sam-system", "example-system", "stampy-webhook", "stride-eks-components", "system", "vault-injection",
 		"vault-webhook",
 	}
 )
@@ -207,7 +207,7 @@ func buildConfigListMap() map[string][]configInfo {
 				getNamespace: defaultGetNamespace,
 			}, // starttls.jsonnet
 		},
-		DefaultZkSfdcnet: {
+		DefaultZkSet: {
 			{
 				gvr: constants.EnvoyFilterResource,
 				getName: func(object *unstructured.Unstructured) (string, error) {
@@ -216,7 +216,7 @@ func buildConfigListMap() map[string][]configInfo {
 				getNamespace: defaultGetNamespace,
 			}, // zkfilter.jsonnet
 		},
-		DefaultRedisSfdcnet: {
+		DefaultRedisSet: {
 			// this envoy filter only exists when the service object has RedisOpsTimeoutAnnotation set on it
 			{
 				gvr: constants.EnvoyFilterResource,
@@ -253,7 +253,7 @@ func buildConfigListMap() map[string][]configInfo {
 					return getResourceNameFromMetadata(svc, "header-casing"), nil
 				},
 			},
-			// header-casing (sfproxy)
+			// header-casing (istio-ingress)
 			{
 				gvr: constants.EnvoyFilterResource,
 				getNamespace: func(obj *unstructured.Unstructured) (string, error) {
@@ -294,7 +294,7 @@ func buildConfigListMap() map[string][]configInfo {
 					return getResourceNameFromMetadata(svc, "header-casing"), nil
 				},
 			},
-			// header-casing (sfproxy)
+			// header-casing (istio-ingress)
 			{
 				gvr: constants.EnvoyFilterResource,
 				getNamespace: func(obj *unstructured.Unstructured) (string, error) {
@@ -331,7 +331,7 @@ func buildConfigListMap() map[string][]configInfo {
 	result[CoreOnSamDapp] = result[CoreOnSamCoreapp]
 
 	// Symlinks
-	result[Caas] = result[DefaultRedisSfdcnet]
+	result[Caas] = result[DefaultRedisSet]
 	result[CaasPc] = result[DefaultExternalService]
 
 	return result

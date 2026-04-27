@@ -3,7 +3,7 @@ package controllers
 import (
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
 	kubeinformers "k8s.io/client-go/informers"
 

@@ -4,46 +4,46 @@ import (
 	"context"
 	"fmt"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/cluster"
+	"github.com/istio-ecosystem/mesh-operator/pkg/cluster"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/controllers_api"
+	"github.com/istio-ecosystem/mesh-operator/pkg/controllers_api"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/deployment"
+	"github.com/istio-ecosystem/mesh-operator/pkg/deployment"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/statefulset"
+	"github.com/istio-ecosystem/mesh-operator/pkg/statefulset"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/reconcilemetadata"
+	"github.com/istio-ecosystem/mesh-operator/pkg/reconcilemetadata"
 
 	"k8s.io/apimachinery/pkg/runtime"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	constants2 "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/generated/clientset/versioned"
+	constants2 "github.com/istio-ecosystem/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/generated/clientset/versioned"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common"
 
 	"k8s.io/apimachinery/pkg/labels"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/matching"
+	"github.com/istio-ecosystem/mesh-operator/pkg/matching"
 
 	"time"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/multicluster"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/multicluster"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
-	meshOpErrors "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/errors"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
+	meshOpErrors "github.com/istio-ecosystem/mesh-operator/pkg/errors"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 
 	"github.com/google/uuid"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/transition"
+	"github.com/istio-ecosystem/mesh-operator/pkg/transition"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"
@@ -52,10 +52,10 @@ import (
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/tools/cache"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/dynamicrouting"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/features"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/resources"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/templating"
+	"github.com/istio-ecosystem/mesh-operator/pkg/dynamicrouting"
+	"github.com/istio-ecosystem/mesh-operator/pkg/features"
+	"github.com/istio-ecosystem/mesh-operator/pkg/resources"
+	"github.com/istio-ecosystem/mesh-operator/pkg/templating"
 )
 
 // MulticlusterServiceController - A Service controller implementation, capable of handling reconciliation for multiple clusters
@@ -440,7 +440,7 @@ func (c *MulticlusterServiceController) getPoliciesForService(service *corev1.Se
 	}
 
 	/*
-		When both k8s service name is same as falcon service name, we can re-use this.
+		When the k8s service name matches the logical service identity, this policy can be re-used.
 		if features.EnableTrafficShardingPolicy {
 			// TSP is handled by dedicated controller, not as service policy
 			// shardingPolicy, err := c.getPolicyObjectForService(constants2.TrafficShardingPolicyName, service)

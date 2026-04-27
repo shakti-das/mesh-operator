@@ -10,16 +10,16 @@ import (
 	"sync"
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
 	"github.com/prometheus/client_golang/prometheus"
 
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
 
 	"github.com/joeyb/goldenfiles"
 	"github.com/stretchr/testify/assert"
@@ -30,7 +30,7 @@ import (
 )
 
 const (
-	realTemplatesPath = "projects/services/servicemesh/mesh-operator/pkg/testdata/test-templates"
+	realTemplatesPath = "../testdata/test-templates"
 )
 
 var (
@@ -65,7 +65,7 @@ func TestTemplateRenderer(t *testing.T) {
 
 	nilServiceContext := NewRenderRequestContext(nil, map[string]string{}, defaultMsmOwnerRef, "cluster1", "", nil, nil)
 	workspacePath := os.Getenv("WORKSPACE_PATH") // required for bazel to write goldfiles back to source
-	goldenfiles.GoldenFilePath = workspacePath + "projects/services/servicemesh/mesh-operator/pkg/testdata/TestTemplateRenderer/"
+	goldenfiles.GoldenFilePath = workspacePath + "../testdata/TestTemplateRenderer/"
 
 	testCases := []struct {
 		name                     string

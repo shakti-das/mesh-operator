@@ -1,0 +1,11 @@
+apiVersion: mesh.io/v1alpha1
+kind: MeshOperator
+metadata:
+  name: demo
+  namespace: demo
+spec:
+  serviceSelector:
+    matchLabels:
+      routing.mesh.io/enabled: "true"
+  templates:
+    baseTemplate: default/default

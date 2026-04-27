@@ -432,9 +432,6 @@ type Oauth2Provider struct {
 
 	// +kubebuilder:validation:Required
 	ServiceProvider string `json:"serviceProvider"`
-
-	// +kubebuilder:validation:Optional
-	FalconInstance string `json:"falconInstance,omitempty"`
 }
 
 type OauthClient struct {
@@ -443,9 +440,6 @@ type OauthClient struct {
 
 	// +kubebuilder:validation:Required
 	ServiceProvider string `json:"serviceProvider"`
-
-	// +kubebuilder:validation:Optional
-	FalconInstance string `json:"falconInstance,omitempty"`
 
 	// +kubebuilder:default:=false
 	// +kubebuilder:validation:Optional

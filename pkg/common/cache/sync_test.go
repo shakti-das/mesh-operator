@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	metricstesting "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/common/pkg/metrics/testing"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
+	metricstesting "github.com/istio-ecosystem/mesh-operator/common/pkg/metrics/testing"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
 	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/client-go/tools/cache"
 )

@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"reflect"
 
-	constants2 "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/common/pkg/k8s/constants"
+	constants2 "github.com/istio-ecosystem/mesh-operator/common/pkg/k8s/constants"
 
-	meshv1alpha1 "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
+	meshv1alpha1 "github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/generated/clientset/versioned/fake"
+	"github.com/istio-ecosystem/mesh-operator/pkg/generated/clientset/versioned/fake"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
 	istiov1alpha3 "istio.io/client-go/pkg/apis/networking/v1alpha3"

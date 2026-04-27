@@ -5,14 +5,14 @@ import (
 	"encoding/json"
 	"fmt"
 
-	commonmetrics "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics"
+	commonmetrics "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/pkg/common"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 	"go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
@@ -26,11 +26,11 @@ const (
 	blueColor  = "blue"
 	greenColor = "green"
 
-	casamNamespace = "core-on-sam"
+	casamNamespace = "example-coreapp"
 	hsrNamespace   = "hsr"
 )
 
-var routingContextResource = schema.GroupVersionResource{Group: "mesh.sfdc.net", Version: "v1", Resource: "routingcontexts"}
+var routingContextResource = schema.GroupVersionResource{Group: "mesh.io.example.com", Version: "v1", Resource: "routingcontexts"}
 
 var casamNamespaces = []string{casamNamespace, hsrNamespace}
 

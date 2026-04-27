@@ -5,15 +5,15 @@ import (
 	"os"
 	"testing"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/constants"
+	"github.com/istio-ecosystem/mesh-operator/pkg/constants"
 
-	metricstesting "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/common/metrics/testing"
+	metricstesting "github.com/istio-ecosystem/mesh-operator/pkg/common/metrics/testing"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/api/mesh.io/v1alpha1"
-	"git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/mesh-operator/pkg/kube_test"
+	"github.com/istio-ecosystem/mesh-operator/api/mesh.io/v1alpha1"
+	"github.com/istio-ecosystem/mesh-operator/pkg/kube_test"
 	"github.com/joeyb/goldenfiles"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap/zaptest"
@@ -25,7 +25,7 @@ import (
 )
 
 func TestComposeCasamOverlays(t *testing.T) {
-	testFilesDir := "projects/services/servicemesh/mesh-operator/pkg/testdata/TestComposeCasamOverlays/"
+	testFilesDir := "../testdata/TestComposeCasamOverlays/"
 	workspacePath := os.Getenv("WORKSPACE_PATH")
 	goldenfiles.GoldenFilePath = workspacePath + testFilesDir
 
@@ -39,25 +39,25 @@ func TestComposeCasamOverlays(t *testing.T) {
 		{
 			name:           "Live: blue, Test: blue",
 			routingContext: createRoutingContext("blue", "blue"),
-			namespace:      "core-on-sam",
+			namespace:      "example-coreapp",
 			serviceName:    "ora1-casam-app",
 		},
 		{
 			name:           "Live: blue, Test: green",
 			routingContext: createRoutingContext("blue", "green"),
-			namespace:      "core-on-sam",
+			namespace:      "example-coreapp",
 			serviceName:    "ora1-casam-app",
 		},
 		{
 			name:           "Live: green, Test: blue",
 			routingContext: createRoutingContext("green", "blue"),
-			namespace:      "core-on-sam",
+			namespace:      "example-coreapp",
 			serviceName:    "ora1-casam-app",
 		},
 		{
 			name:           "Live: green, Test: green",
 			routingContext: createRoutingContext("green", "green"),
-			namespace:      "core-on-sam",
+			namespace:      "example-coreapp",
 			serviceName:    "ora1-casam-app",
 		},
 		{
@@ -214,7 +214,7 @@ func TestInitCasamOverlays(t *testing.T) {
 		"p_servicename": "service",
 	}
 
-	var casamService = kube_test.NewServiceBuilder(serviceName, "core-on-sam").
+	var casamService = kube_test.NewServiceBuilder(serviceName, "example-coreapp").
 		SetLabels(platformLabels).
 		Build()
 	casamService.SetUID("casam-uid")
@@ -222,13 +222,13 @@ func TestInitCasamOverlays(t *testing.T) {
 	existingMop := v1alpha1.MeshOperator{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      mopName,
-			Namespace: "core-on-sam",
+			Namespace: "example-coreapp",
 		},
 	}
 
 	routingContext := createRoutingContext("blue", "green")
 	routingContext.SetName(serviceName)
-	routingContext.SetNamespace("core-on-sam")
+	routingContext.SetNamespace("example-coreapp")
 
 	testCases := []struct {
 		name                string
@@ -282,10 +282,10 @@ func TestInitCasamOverlays(t *testing.T) {
 			service:        casamService,
 			routingContext: &unstructured.Unstructured{
 				Object: map[string]interface{}{
-					"apiVersion": "mesh.sfdc.net/v1",
+					"apiVersion": "mesh.io.example.com/v1",
 					"kind":       "RoutingContext",
 					"metadata": map[string]interface{}{
-						"namespace": "core-on-sam",
+						"namespace": "example-coreapp",
 						"name":      serviceName,
 					},
 					"spec": map[string]interface{}{},
@@ -400,7 +400,7 @@ func TestInitCasamOverlays(t *testing.T) {
 func createRoutingContext(liveColor, testColor string) *unstructured.Unstructured {
 	return &unstructured.Unstructured{
 		Object: map[string]interface{}{
-			"apiVersion": "mesh.sfdc.net/v1",
+			"apiVersion": "mesh.io.example.com/v1",
 			"kind":       "RoutingContext",
 			"spec": map[string]interface{}{
 				"liveTrafficAppVersion": liveColor,
