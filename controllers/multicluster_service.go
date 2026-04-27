@@ -607,7 +607,7 @@ func (c *MulticlusterServiceController) extractDynamicRoutingMetadata(ctxLogger 
 	}
 
 	var clients []kube.Client
-	for clusterName, _ := range activeServices {
+	for clusterName := range activeServices {
 		_, cluster := c.clusterManager.GetClusterById(clusterName)
 		clients = append(clients, cluster.GetKubeClient())
 	}

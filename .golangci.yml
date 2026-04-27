@@ -1,0 +1,51 @@
+run:
+  timeout: 5m
+  tests: true
+
+# Initial lint scope is conservative: formatting + basic correctness that the
+# codebase already passes. Expanding coverage (staticcheck, errcheck, unused,
+# ineffassign, misspell, unconvert, goimports ordering, deeper govet
+# analyzers) is tracked as follow-up work so the first CI signal is green on
+# existing code.
+linters:
+  disable-all: true
+  enable:
+    - gofmt
+    - govet
+    - nolintlint
+
+linters-settings:
+  govet:
+    # Default analyzer set (copylocks, printf, unreachable, etc.) matches
+    # `go vet ./...`, which already passes. Avoid enable-all until the
+    # nilness / unusedwrite findings are triaged.
+    enable:
+      - asmdecl
+      - assign
+      - atomic
+      - bools
+      - buildtag
+      - cgocall
+      - composites
+      - copylocks
+      - errorsas
+      - httpresponse
+      - loopclosure
+      - lostcancel
+      - nilfunc
+      - printf
+      - shift
+      - stdmethods
+      - structtag
+      - tests
+      - unmarshal
+      - unreachable
+      - unsafeptr
+      - unusedresult
+
+issues:
+  exclude-dirs:
+    - analysis
+    - examples
+  max-issues-per-linter: 0
+  max-same-issues: 0
