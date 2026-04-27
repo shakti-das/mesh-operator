@@ -409,8 +409,8 @@ func TestMarkClusterHealthyUnhealthy(t *testing.T) {
 // runConcurrently runs the given function in multiple goroutines concurrently,
 func runConcurrently(wg *sync.WaitGroup, stopCh <-chan struct{}, threads int, fn func(id int)) {
 	for i := 0; i < threads; i++ {
+		wg.Add(1)
 		go func(id int) {
-			wg.Add(1)
 			defer wg.Done()
 			for {
 				select {

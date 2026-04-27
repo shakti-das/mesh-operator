@@ -693,7 +693,7 @@ func TestMopStatusForRelatedResources(t *testing.T) {
 		{
 			name:           "Conflict error",
 			object:         testSvc,
-			appliedResults: getAppliedResultWithNs(testSvc.GetNamespace(), &errors.StatusError{metav1.Status{Reason: "Conflict"}}),
+			appliedResults: getAppliedResultWithNs(testSvc.GetNamespace(), &errors.StatusError{ErrStatus: metav1.Status{Reason: "Conflict"}}),
 			expectedStatus: v1alpha1.MeshOperatorStatus{
 				Phase:   PhaseFailed,
 				Message: "Conflict error while updating resources",

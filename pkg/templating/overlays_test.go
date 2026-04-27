@@ -449,27 +449,27 @@ func TestApplyOverlaysMultipleMops(t *testing.T) {
 			name:              "Good then bad mops",
 			mopsToOverlays:    map[string][]v1alpha1.Overlay{"mop1": {matchingOverlayWithVSName}, "mop2": {nonMatchingOverlay}},
 			expectedResult:    []*unstructured.Unstructured{&overlaidRetriesVs, &otherVs},
-			expectedMopErrors: map[string]*meshoperrors.OverlayErrorInfo{"mop2": {0, overlayErr}},
+			expectedMopErrors: map[string]*meshoperrors.OverlayErrorInfo{"mop2": {OverlayIndex: 0, Message: overlayErr}},
 		},
 		{
 			name:              "Good then bad then good mops",
 			mopsToOverlays:    map[string][]v1alpha1.Overlay{"mop1": {overlay1}, "mop2": {nonMatchingOverlay}, "mop3": {overlay2}},
 			expectedResult:    []*unstructured.Unstructured{&overlaidBothLabelsVs, &otherVs},
-			expectedMopErrors: map[string]*meshoperrors.OverlayErrorInfo{"mop2": {0, overlayErr}},
+			expectedMopErrors: map[string]*meshoperrors.OverlayErrorInfo{"mop2": {OverlayIndex: 0, Message: overlayErr}},
 		},
 		{
 			name:              "Bad then good mops",
 			mopsToOverlays:    map[string][]v1alpha1.Overlay{"mop1": {nonMatchingOverlay}, "mop2": {overlay1, overlay2}},
 			expectedResult:    []*unstructured.Unstructured{&overlaidBothLabelsVs, &otherVs},
-			expectedMopErrors: map[string]*meshoperrors.OverlayErrorInfo{"mop1": {0, overlayErr}},
+			expectedMopErrors: map[string]*meshoperrors.OverlayErrorInfo{"mop1": {OverlayIndex: 0, Message: overlayErr}},
 		},
 		{
 			name:           "Two bad mops",
 			mopsToOverlays: map[string][]v1alpha1.Overlay{"mop1": {nonMatchingOverlay}, "mop2": {nonMatchingNameWithPortOverlay}},
 			expectedResult: []*unstructured.Unstructured{&testVs, &otherVs},
 			expectedMopErrors: map[string]*meshoperrors.OverlayErrorInfo{
-				"mop1": {0, overlayErr},
-				"mop2": {0, overlayErr},
+				"mop1": {OverlayIndex: 0, Message: overlayErr},
+				"mop2": {OverlayIndex: 0, Message: overlayErr},
 			},
 		},
 	}

@@ -62,11 +62,11 @@ func (s *ServiceEntryBuilder) SetPorts(ports []*networkingv1alpha3.ServicePort) 
 	return s
 }
 
-func (s *ServiceEntryBuilder) Build() istiov1alpha3.ServiceEntry {
-	return s.se
+func (s *ServiceEntryBuilder) Build() *istiov1alpha3.ServiceEntry {
+	return &s.se
 }
 
 func (s *ServiceEntryBuilder) GetServiceEntryAsUnstructuredObject() *unstructured.Unstructured {
-	svcAsUnstructuredObject, _ := kube.ObjectToUnstructured(s.se)
+	svcAsUnstructuredObject, _ := kube.ObjectToUnstructured(&s.se)
 	return svcAsUnstructuredObject
 }
