@@ -1,0 +1,25 @@
+# Binaries
+/bin/
+/dist/
+mesh-operator
+cmd/mesh-operator/mesh-operator
+
+# Go build/test artifacts
+*.exe
+*.test
+*.out
+coverage.out
+coverage.html
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local scratch output (ad-hoc investigation notes not meant for main)
+/analysis/

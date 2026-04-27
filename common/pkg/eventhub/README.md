@@ -49,7 +49,7 @@ import (
   "fmt"
   "time"
 
-  "git.soma.salesforce.com/services/go-sfdc-bazel/projects/services/servicemesh/common/pkg/eventhub"
+  "github.com/istio-ecosystem/mesh-operator/common/pkg/eventhub"
 )
 
 func main() {

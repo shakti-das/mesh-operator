@@ -1,8 +1,5 @@
-/*
-  Copyright, 2021, salesforce.com, inc.
-  All Rights Reserved.
-  Company Confidential.
-*/
+// Copyright The mesh-operator Authors
+// SPDX-License-Identifier: Apache-2.0
 
 package v1alpha1
 

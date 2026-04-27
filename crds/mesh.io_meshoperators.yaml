@@ -1301,8 +1301,6 @@ spec:
                           properties:
                             clientId:
                               type: string
-                            falconInstance:
-                              type: string
                             serviceProvider:
                               type: string
                             useMtlsTokenEndpoint:
@@ -1324,8 +1322,6 @@ spec:
                                 items:
                                   type: string
                                 type: array
-                              falconInstance:
-                                type: string
                               serviceProvider:
                                 type: string
                             required:

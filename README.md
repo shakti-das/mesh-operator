@@ -30,7 +30,7 @@ go test ./...
 
 ```bash
 go run ./cmd/mesh-operator server \
-  --templates-location=./examples/templates \
+  --template-paths=./examples/templates \
   --config-namespace=istio-system
 ```
 
