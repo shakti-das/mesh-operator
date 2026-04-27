@@ -419,7 +419,7 @@ func TestMulticlusterServiceController_updateCTPStatus(t *testing.T) {
 		},
 	}
 
-	reconciledTime := metav1.Time{time.Now()}
+	reconciledTime := metav1.Time{Time: time.Now()}
 
 	testReconcileError := "reconcile error - test"
 	testCases := []struct {

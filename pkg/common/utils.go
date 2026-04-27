@@ -268,5 +268,5 @@ func NewRealTimeProvider() TimeProvider {
 }
 
 func (g *RealTimeProvider) Now() *metav1.Time {
-	return &metav1.Time{time.Now()}
+	return &metav1.Time{Time: time.Now()}
 }

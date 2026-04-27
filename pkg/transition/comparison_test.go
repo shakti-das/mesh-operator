@@ -313,15 +313,16 @@ func TestMeshConfigComparer(t *testing.T) {
 			copilotGeneratedObjects:           defaultCopilotGeneratedObjects,
 			mopGeneratedObjects: convertToUnstructured(t,
 				copilotVirtualServiceGrpc,
-				buildVirtualService(buildDelegateName(objectName, 80),
-					v1alpha3.VirtualService{
-						Hosts: []string{
-							"test-service1.test-ns.svc.cluster.local",
-							"test-service1.test-ns.svc.mesh.io",
-						},
-						Gateways: []string{"mesh"},
-						Http:     []*v1alpha3.HTTPRoute{{Match: []*v1alpha3.HTTPMatchRequest{{Port: 80}}}},
-					}),
+				func() *istiov1alpha3.VirtualService {
+					vs := newLabeledVirtualService(buildDelegateName(objectName, 80))
+					vs.Spec.Hosts = []string{
+						"test-service1.test-ns.svc.cluster.local",
+						"test-service1.test-ns.svc.mesh.io",
+					}
+					vs.Spec.Gateways = []string{"mesh"}
+					vs.Spec.Http = []*v1alpha3.HTTPRoute{{Match: []*v1alpha3.HTTPMatchRequest{{Port: 80}}}}
+					return vs
+				}(),
 				copilotDestinationRule),
 			expectedConfig:  convertToUnstructured(t, copilotVirtualServiceGrpc, copilotDestinationRule),
 			expectedMetrics: []TransitionMetrics{MopTransitionDifferentConfigSpec},
@@ -358,7 +359,7 @@ func TestMeshConfigComparer(t *testing.T) {
 			copilotGeneratedObjects:           defaultCopilotGeneratedObjects,
 			mopGeneratedObjects: convertToUnstructured(t,
 				copilotVirtualServiceGrpc,
-				buildVirtualService("other-vs", v1alpha3.VirtualService{}),
+				newLabeledVirtualService("other-vs"),
 				copilotDestinationRule),
 			expectedConfig:  convertToUnstructured(t, copilotVirtualServiceGrpc, copilotDestinationRule),
 			expectedMetrics: []TransitionMetrics{MopTransitionUnknownConfigGenerated},
@@ -1142,13 +1143,21 @@ func createCopilotDestinationRule() *istiov1alpha3.DestinationRule {
 }
 
 func createCopilotMainVirtualService(name string, httpRouteNameEnabled bool, delegatePorts ...uint32) *istiov1alpha3.VirtualService {
-	spec := v1alpha3.VirtualService{
-		Hosts: []string{
-			"test-service.test-ns.svc.cluster.local",
-			"test-service.test-ns.svc.mesh.io",
+	vs := &istiov1alpha3.VirtualService{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       constants.VirtualServiceKind.Kind,
+			APIVersion: constants.VirtualServiceResource.GroupVersion().String(),
 		},
-		Gateways: []string{"mesh"},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: objectNsName,
+		},
 	}
+	vs.Spec.Hosts = []string{
+		"test-service.test-ns.svc.cluster.local",
+		"test-service.test-ns.svc.mesh.io",
+	}
+	vs.Spec.Gateways = []string{"mesh"}
 
 	for _, port := range delegatePorts {
 		httpRoute := v1alpha3.HTTPRoute{
@@ -1160,35 +1169,28 @@ func createCopilotMainVirtualService(name string, httpRouteNameEnabled bool, del
 		if httpRouteNameEnabled {
 			httpRoute.Name = "http-" + fmt.Sprint(port)
 		}
-		spec.Http = append(spec.Http, &httpRoute)
+		vs.Spec.Http = append(vs.Spec.Http, &httpRoute)
 	}
 
-	return &istiov1alpha3.VirtualService{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       constants.VirtualServiceKind.Kind,
-			APIVersion: constants.VirtualServiceResource.GroupVersion().String(),
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: objectNsName,
-		},
-		Spec: spec,
-	}
+	return vs
 }
 
 func createVirtualServiceWithDefaultSpec(name string, port uint32) *istiov1alpha3.VirtualService {
-	return buildVirtualService(name, v1alpha3.VirtualService{
-		Hosts: []string{
-			"test-service.test-ns.svc.cluster.local",
-			"test-service.test-ns.svc.mesh.io",
-		},
-		Gateways: []string{"mesh"},
-		Http:     []*v1alpha3.HTTPRoute{{Match: []*v1alpha3.HTTPMatchRequest{{Port: port}}}},
-	})
+	vs := newLabeledVirtualService(name)
+	vs.Spec.Hosts = []string{
+		"test-service.test-ns.svc.cluster.local",
+		"test-service.test-ns.svc.mesh.io",
+	}
+	vs.Spec.Gateways = []string{"mesh"}
+	vs.Spec.Http = []*v1alpha3.HTTPRoute{{Match: []*v1alpha3.HTTPMatchRequest{{Port: port}}}}
+	return vs
 }
 
-func buildVirtualService(name string, spec v1alpha3.VirtualService) *istiov1alpha3.VirtualService {
-
+// newLabeledVirtualService returns a VirtualService skeleton with the labels
+// and annotations the comparison tests expect. Callers populate Spec fields
+// directly on the returned pointer to avoid copying the VirtualService Spec
+// by value, which carries a protobuf lock.
+func newLabeledVirtualService(name string) *istiov1alpha3.VirtualService {
 	return &istiov1alpha3.VirtualService{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       constants.VirtualServiceKind.Kind,
@@ -1200,7 +1202,6 @@ func buildVirtualService(name string, spec v1alpha3.VirtualService) *istiov1alph
 			Labels:      map[string]string{"mesh.io.example.com/managed-by": "copilot"},
 			Annotations: map[string]string{},
 		},
-		Spec: spec,
 	}
 }
 

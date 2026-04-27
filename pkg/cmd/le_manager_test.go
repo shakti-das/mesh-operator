@@ -91,7 +91,8 @@ func TestOnStartLeading(t *testing.T) {
 
 	handler.onStartLeading(context.TODO())
 
-	ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), 2*time.Second)
+	defer cancel()
 	cache.WaitForCacheSync(ctx.Done(), func() bool {
 		return ctrl.started == true
 	})
@@ -148,7 +149,8 @@ func TestAutoShutdown(t *testing.T) {
 				processKilled = true
 			})
 
-			ctx, _ := context.WithTimeout(context.TODO(), 2*time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), 2*time.Second)
+			defer cancel()
 			cache.WaitForCacheSync(ctx.Done(), func() bool {
 				return processKilled
 			})

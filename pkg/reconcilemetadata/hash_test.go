@@ -25,7 +25,7 @@ func TestComputeServiceEntryHash(t *testing.T) {
 	testSe := kube_test.NewServiceEntryBuilder("my-service-entry", "remote-namespace").SetResourceVersion(serviceResourceVersion).Build()
 
 	reconcileHashMgr := NewReconcileHashManager()
-	hash := reconcileHashMgr.ComputeObjectHash(&testSe, "ServiceEntry")
+	hash := reconcileHashMgr.ComputeObjectHash(testSe, "ServiceEntry")
 	assert.Equal(t, serviceResourceVersion, hash)
 }
 

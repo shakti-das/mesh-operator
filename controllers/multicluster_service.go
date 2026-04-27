@@ -410,7 +410,7 @@ func (c *MulticlusterServiceController) reconcile(item QueueItem) error {
 
 		if policies[constants2.ClusterTrafficPolicyName] != nil {
 			clusterTrafficPolicy := policies[constants2.ClusterTrafficPolicyName]
-			err = c.updateCTPStatusOnReconcile(reconcileError, clusterTrafficPolicy, v1.Time{time.Now()})
+			err = c.updateCTPStatusOnReconcile(reconcileError, clusterTrafficPolicy, v1.Time{Time: time.Now()})
 			if err != nil {
 				return err
 			}

@@ -21,7 +21,7 @@ var (
 	testService = kube_test.NewServiceBuilder("my-service", "my-namespace").SetLabels(map[string]string{"app": "shipping"}).Build()
 	testSe      = kube_test.NewServiceEntryBuilder("my-se", "my-namespace").SetLabels(map[string]string{"app": "shipping"}).Build()
 
-	testClient = kube_test.NewKubeClientBuilder().AddK8sObjects(&testService).AddIstioObjects(&testSe).Build()
+	testClient = kube_test.NewKubeClientBuilder().AddK8sObjects(&testService).AddIstioObjects(testSe).Build()
 
 	requirement, _ = labels.NewRequirement("app", selection.Equals, []string{"shipping"})
 	selector       = labels.NewSelector().Add(*requirement)

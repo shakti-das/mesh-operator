@@ -94,7 +94,7 @@ func TestWaitForCacheSyncWithTimeout(t *testing.T) {
 		{
 			name: "Timeout",
 			informer: &MockInformer{
-				hasSyncedFunc: func() bool { select {}; return false },
+				hasSyncedFunc: func() bool { select {} },
 			},
 			timeout:           1 * time.Second,
 			expectedErr:       fmt.Sprintf("timed out waiting for cache sync: %s", informerName),

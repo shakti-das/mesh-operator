@@ -165,8 +165,8 @@ func TestMergeServices(t *testing.T) {
 }
 
 func TestMergeMeshOperators(t *testing.T) {
-	dateInThePast := metav1.Time{time.Now().Add(-100 * time.Hour)}
-	dateInTheFuture := metav1.Time{time.Now().Add(100 * time.Hour)}
+	dateInThePast := metav1.Time{Time: time.Now().Add(-100 * time.Hour)}
+	dateInTheFuture := metav1.Time{Time: time.Now().Add(100 * time.Hour)}
 
 	nonOverlapingMop := kube_test.NewMopBuilder("test-ns", "non-overlapping-mop").Build()
 	otherNonOverlappingMop := kube_test.NewMopBuilder("test-ns", "other-non-overlapping-mop").Build()
@@ -225,8 +225,8 @@ func TestMergeMeshOperators(t *testing.T) {
 }
 
 func TestGetOldestService(t *testing.T) {
-	dateInThePast := metav1.Time{time.Now().Add(-100 * time.Hour)}
-	dateInTheFuture := metav1.Time{time.Now().Add(100 * time.Hour)}
+	dateInThePast := metav1.Time{Time: time.Now().Add(-100 * time.Hour)}
+	dateInTheFuture := metav1.Time{Time: time.Now().Add(100 * time.Hour)}
 
 	olderSvc := kube_test.NewServiceBuilder("test-svc", "test-ns").SetUID("older-svc-uid").Build()
 	olderSvc.CreationTimestamp = dateInThePast

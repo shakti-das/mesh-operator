@@ -616,7 +616,7 @@ func TestServiceEntryInformerOwnerCheck(t *testing.T) {
 		Name:       "non-existing-object",
 	}
 
-	client := kube_test.NewKubeClientBuilder().AddIstioObjects(&testSe).Build()
+	client := kube_test.NewKubeClientBuilder().AddIstioObjects(testSe).Build()
 	fakeClient := (client).(*kube_test.FakeClient)
 	fakeCluster := &Cluster{
 		ID:     cluster.ID(clusterName),
